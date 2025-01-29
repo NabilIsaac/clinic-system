@@ -11,15 +11,13 @@ return new class extends Migration
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('patient_id')->unique();
-            $table->string('first_name');
-            $table->string('last_name');
             $table->string('phone');
             $table->string('address');
             $table->date('date_of_birth');
+            $table->enum('gender', ['male', 'female', 'other']);
             $table->string('blood_type')->nullable();
             $table->text('allergies')->nullable();
-            $table->text('medical_history')->nullable();
+            $table->text('chronic_diseases')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

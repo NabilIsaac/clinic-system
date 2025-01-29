@@ -11,16 +11,16 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('department_id')->constrained()->onDelete('cascade');
-            $table->foreignId('employee_type_id')->constrained()->onDelete('cascade');
-            $table->string('employee_id')->unique();
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->foreignId('employee_type_id')->constrained();
+            $table->foreignId('department_id')->constrained();
             $table->string('phone');
             $table->string('address');
-            $table->date('date_of_birth');
-            $table->date('hire_date');
+            $table->date('joining_date');
             $table->decimal('salary', 10, 2);
+            $table->string('bank_account')->nullable();
+            $table->string('emergency_contact')->nullable();
+            $table->text('qualifications')->nullable();
+            $table->text('specialization')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

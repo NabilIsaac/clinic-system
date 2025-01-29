@@ -12,15 +12,13 @@ class Patient extends Model
 
     protected $fillable = [
         'user_id',
-        'patient_id',
-        'first_name',
-        'last_name',
         'phone',
         'address',
         'date_of_birth',
+        'gender',
         'blood_type',
         'allergies',
-        'medical_history',
+        'chronic_diseases',
     ];
 
     protected $casts = [
@@ -55,10 +53,5 @@ class Patient extends Model
     public function bills()
     {
         return $this->hasMany(Bill::class);
-    }
-
-    public function getFullNameAttribute()
-    {
-        return "{$this->first_name} {$this->last_name}";
     }
 }

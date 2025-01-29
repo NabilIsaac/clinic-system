@@ -13,11 +13,21 @@ class Department extends Model
     protected $fillable = [
         'name',
         'description',
+        'is_active'
     ];
 
-    public function employees()
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
+    public function users()
     {
-        return $this->hasMany(Employee::class);
+        return $this->hasMany(User::class);
+    }
+
+    public function doctors()
+    {
+        return $this->hasMany(User::class)->role('doctor');
     }
 
     public function appointments()
