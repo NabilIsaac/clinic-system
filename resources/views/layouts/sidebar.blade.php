@@ -1,6 +1,20 @@
 <div class="w-64 inset-y-0 left-0 bg-white border-r h-screen">
     <div class="fixed w-64">
-        <div x-data="{ showUserModal: false, currentView: 'work' }" class="flex flex-col h-full">
+        <div x-data="{ 
+            showUserModal: false, 
+            currentView: '{{ session('currentView', 'work') }}',
+            updateView(view) {
+                this.currentView = view;
+                fetch('/update-view', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                    },
+                    body: JSON.stringify({ view: view })
+                });
+            }
+        }" class="flex flex-col h-full">
             <!-- User Profile Button -->
             <div class="p-4 border-b">
                 <button type="button" @click="showUserModal = !showUserModal" 
@@ -26,7 +40,7 @@
                     <div class="p-3">
                         <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Account Type</h4>
                         <div class="space-y-2">
-                            <button @click="currentView = 'work'; showUserModal = false" 
+                            <button @click="updateView('work'); showUserModal = false" 
                                     class="flex items-center w-full space-x-2 p-2 rounded-md"
                                     :class="{ 'bg-gray-50': currentView === 'work' }">
                                 <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -35,7 +49,7 @@
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                 </svg>
                             </button>
-                            <button @click="currentView = 'employee'; showUserModal = false" 
+                            <button @click="updateView('employee'); showUserModal = false" 
                                     class="flex items-center w-full space-x-2 p-2 rounded-md"
                                     :class="{ 'bg-gray-50': currentView === 'employee' }">
                                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -110,21 +124,21 @@
                         {{ __('Employee Portal') }}
                     </h3>
 
-                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                    <a href="{{ route('employee.payroll') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                         <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                         {{ __('Payroll & Salary') }}
                     </a>
 
-                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                    <a href="{{ route('employee.leave-requests.index') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                         <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                         {{ __('Leave Requests') }}
                     </a>
 
-                    <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                    <a href="{{ route('employee.schedule') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                         <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -136,21 +150,21 @@
                             {{ __('Documents') }}
                         </h3>
 
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                        <a href="{{ route('employee.documents.payslips') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                             <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             {{ __('Payslips') }}
                         </a>
 
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                        <a href="{{ route('employee.documents.contracts') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                             <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             {{ __('Contracts') }}
                         </a>
 
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                        <a href="{{ route('employee.documents.tax-documents') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                             <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>

@@ -9,6 +9,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Patient\DashboardController as PatientDashboardController;
+use App\Http\Controllers\Employee\EmployeePortalController;
+use App\Http\Controllers\ViewStateController;
+use App\Http\Controllers\Employee\LeaveRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/update-view', [ViewStateController::class, 'updateView'])->name('update-view');
 });
 
 // Dashboard Routes
@@ -74,4 +78,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('appointments', AppointmentController::class);
     Route::get('/doctor/{doctor}/schedule', [AppointmentController::class, 'getDoctorSchedule'])
         ->name('doctor.schedule');
+
+    // Employee Routes
+    Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
+        Route::get('/payroll', [EmployeePortalController::class, 'payroll'])->name('payroll');
+        Route::get('/leave-requests', [App\Http\Controllers\Employee\LeaveRequestController::class, 'index'])->name('leave-requests.index');
+        Route::post('/leave-requests', [App\Http\Controllers\Employee\LeaveRequestController::class, 'store'])->name('leave-requests.store');
+        Route::get('/schedule', [EmployeePortalController::class, 'schedule'])->name('schedule');
+        Route::get('/documents/payslips', [EmployeePortalController::class, 'payslips'])->name('documents.payslips');
+        Route::get('/documents/contracts', [EmployeePortalController::class, 'contracts'])->name('documents.contracts');
+        Route::get('/documents/tax-documents', [EmployeePortalController::class, 'taxDocuments'])->name('documents.tax-documents');
+    });
 });
