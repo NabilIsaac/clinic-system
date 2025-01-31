@@ -1,130 +1,173 @@
-<x-app-layout>
-    <div class="max-w-3xl mx-auto">
-        <!-- Header -->
-        <div class="flex items-center space-x-4 mb-8">
-            <button type="button" onclick="history.back()" class="text-gray-400 hover:text-gray-500">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-            </button>
-            <div>
-                <h1 class="text-2xl font-semibold text-gray-900">New case</h1>
-                <p class="text-sm text-gray-500">Insert your description here.</p>
-            </div>
-            <div class="flex-1 text-right">
-                <div class="inline-flex items-center space-x-2">
-                    <span class="text-sm text-gray-500">Edited just now</span>
-                    <button type="button" class="text-blue-600 hover:text-blue-700 text-sm font-medium">Share</button>
-                    <button type="button" class="text-gray-400 hover:text-gray-500">
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
+@extends('layouts.app')
 
-        <!-- Case Form -->
-        <div class="bg-white shadow rounded-lg">
-            <div class="p-6 space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Case name</label>
-                    <input type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Enter a case name">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Date added</label>
-                    <div class="mt-1 flex items-center">
-                        <svg class="mr-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-                        </svg>
-                        <span class="text-sm text-gray-900">17 Jan, 2025</span>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Assigned to</label>
-                    <div class="mt-1">
-                        <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="mr-2 h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                            </svg>
-                            Add user
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Originating attorney</label>
-                    <div class="mt-1">
-                        <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="mr-2 h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                            </svg>
-                            Add user
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Client</label>
-                    <div class="mt-1">
-                        <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="mr-2 h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                            </svg>
-                            Add client
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <div class="mt-1">
-                        <textarea rows="3" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Write a description of this case or press 'space' for AI"></textarea>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex items-center space-x-4 pt-4">
-                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="mr-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
-                        </svg>
-                        Attach file
-                    </button>
-                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="mr-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-                        </svg>
-                        AI assistant
-                    </button>
-                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="mr-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-                        </svg>
-                        Add event
-                    </button>
-                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="mr-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                        </svg>
-                        Setup billing
-                    </button>
-                </div>
-            </div>
-
-            <!-- Status Bar -->
-            <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between rounded-b-lg">
-                <div class="flex items-center space-x-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Open
-                    </span>
-                    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                    </svg>
-                </div>
-            </div>
-        </div>
+@section('content')
+<div class="mx-auto">
+    <!-- Header -->
+    <div class="flex items-center space-x-4 mb-8">
+        <button type="button" onclick="history.back()" class="text-gray-400 hover:text-gray-500">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </button>
+        <h1 class="text-xl font-bold text-gray-900">Book an Appointment</h1>
     </div>
-</x-app-layout>
+
+    <div class="bg-white p-4">
+        <form action="{{ route('appointments.store') }}" method="POST" id="appointmentForm">
+            @csrf
+            
+            <!-- Department Selection -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="mb-6">
+                    <label for="department_id" class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                    <select name="department_id" id="department_id" required 
+                        class="mt-1 block w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        <option value="">Select Department</option>
+                        @foreach($departments as $department)
+                            <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
+                                {{ $department->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('department_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Doctor Selection -->
+                <div class="mb-6">
+                    <label for="doctor_id" class="block text-sm font-medium text-gray-700 mb-2">Doctor</label>
+                    <select name="doctor_id" id="doctor_id" required 
+                        class="mt-1 block w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        <option value="">Select Doctor</option>
+                        @foreach($doctors as $doctor)
+                            <option value="{{ $doctor['id'] }}" 
+                                data-department="{{ $doctor['department'] }}"
+                                {{ old('doctor_id') == $doctor['id'] ? 'selected' : '' }}>
+                                Dr. {{ $doctor['name'] }} - {{ $doctor['specialization'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('doctor_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <!-- Patient Selection -->
+                <div class="mb-6">
+                    <label for="patient_id" class="block text-sm font-medium text-gray-700 mb-2">Patient</label>
+                    <select name="patient_id" id="patient_id" required 
+                        class="mt-1 block w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        <option value="">Select patient</option>
+                        @foreach($patients as $patient)
+                            <option value="{{ $patient['id'] }}" 
+                                {{ old('patient_id') == $patient['id'] ? 'selected' : '' }}>
+                                {{ $patient['name'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('patient_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label for="appointment_datetime" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                    <input type="datetime-local" name="appointment_datetime" id="appointment_datetime" required
+                        min="{{ date('Y-m-d') }}"
+                        value="{{ old('appointment_datetime') }}"
+                        class="mt-1 block w-full h-10 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    @error('appointment_datetime')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="start_time" class="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
+                    <input type="time" name="start_time" id="start_time" required
+                        value="{{ old('start_time') }}"
+                        class="mt-1 block w-full h-10 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    @error('start_time')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="end_time" class="block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                    <input type="time" name="end_time" id="end_time" required
+                        value="{{ old('end_time') }}"
+                        class="mt-1 block w-full h-10 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    @error('end_time')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+           
+
+            <!-- Reason for Visit -->
+            <div class="mb-6">
+                <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit</label>
+                <textarea name="reason" id="reason" rows="3" required
+                    class="mt-1 block w-full border-gray-300 p-3 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Please describe your symptoms or reason for the appointment">{{ old('reason') }}</textarea>
+                @error('reason')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Additional Notes -->
+            <div class="mb-6">
+                <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+                <textarea name="notes" id="notes" rows="2"
+                    class="mt-1 block w-full border-gray-300 p-3 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Any additional information you'd like to provide">{{ old('notes') }}</textarea>
+                @error('notes')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Book Appointment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const departmentSelect = document.getElementById('department_id');
+    const doctorSelect = document.getElementById('doctor_id');
+    const doctorOptions = Array.from(doctorSelect.options);
+
+    function filterDoctors() {
+        const selectedDepartment = departmentSelect.options[departmentSelect.selectedIndex].text;
+        
+        // Reset doctor select
+        doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
+        
+        // Filter and add relevant doctors
+        doctorOptions.forEach(option => {
+            if (option.value === '' || option.dataset.department === selectedDepartment) {
+                doctorSelect.add(option.cloneNode(true));
+            }
+        });
+    }
+
+    // Initial filter
+    if (departmentSelect.value) {
+        filterDoctors();
+        // Restore old selection if any
+        const oldDoctorId = "{{ old('doctor_id') }}";
+        if (oldDoctorId) {
+            doctorSelect.value = oldDoctorId;
+        }
+    }
+
+    // Filter doctors when department changes
+    departmentSelect.addEventListener('change', filterDoctors);
+});
+</script>
+@endpush

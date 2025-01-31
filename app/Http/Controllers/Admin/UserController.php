@@ -6,45 +6,67 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
-    public function __construct()
+    public function index(Request $request)
     {
-        $this->middleware('auth');
-    }
+        $query = User::query();
 
-    public function index()
-    {
-        if (!auth()->user()->hasAnyRole(['admin', 'super-admin'])) {
-            abort(403);
+        // Apply role filter
+        if ($request->filled('role')) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('id', $request->role);
+            });
         }
 
-        $users = User::with('roles')->paginate(10);
-        return view('admin.users.index', compact('users'));
+        // Apply status filter
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status);
+        }
+
+        // Apply search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->latest()->paginate(10);
+        $roles = Role::all();
+
+        return view('admin.employee.index', compact('users', 'roles'));
     }
 
     public function create()
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'super-admin'])) {
-            abort(403);
-        }
-
         $roles = Role::all();
-        return view('admin.users.create', compact('roles'));
+        $permissions = Permission::all();
+        return view('admin.employee.create', compact('roles', 'permissions'));
     }
 
     public function store(Request $request)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'super-admin'])) {
-            abort(403);
-        }
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|exists:roles,name'
+            'password' => 'required|string|min:8',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,name',
+            'permissions' => 'array',
+            'permissions.*' => 'exists:permissions,name',
+            'department_id' => 'required|exists:departments,id',
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'joining_date' => 'required|date',
+            'salary' => 'required|numeric|min:0',
+            'account_name' => 'nullable|string|max:255',
+            'account_number' => 'nullable|string|max:255',
+            'bank_name' => 'nullable|string|max:255',
+            'bank_branch' => 'nullable|string|max:255'
         ]);
 
         $user = User::create([
@@ -53,33 +75,47 @@ class UserController extends Controller
             'password' => bcrypt($validated['password'])
         ]);
 
-        $user->assignRole($validated['role']);
+        // Create employee record
+        $user->employee()->create([
+            'department_id' => $validated['department_id'],
+            'phone' => $validated['phone'],
+            'address' => $validated['address'],
+            'joining_date' => $validated['joining_date'],
+            'salary' => $validated['salary'],
+            'account_name' => $validated['account_name'] ?? null,
+            'account_number' => $validated['account_number'] ?? null,
+            'bank_name' => $validated['bank_name'] ?? null,
+            'bank_branch' => $validated['bank_branch'] ?? null
+        ]);
+
+        // Assign roles
+        $user->assignRole($validated['roles']);
+
+        // Assign additional permissions if any
+        if (isset($validated['permissions'])) {
+            $user->givePermissionTo($validated['permissions']);
+        }
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'User created successfully.');
+            ->with('success', 'Employee created successfully');
     }
 
     public function edit(User $user)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'super-admin'])) {
-            abort(403);
-        }
-
         $roles = Role::all();
-        return view('admin.users.edit', compact('user', 'roles'));
+        $permissions = Permission::all();
+        return view('admin.employee.edit', compact('user', 'roles', 'permissions'));
     }
 
     public function update(Request $request, User $user)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'super-admin'])) {
-            abort(403);
-        }
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|exists:roles,name',
-            'password' => 'nullable|string|min:8|confirmed'
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,name',
+            'permissions' => 'array',
+            'permissions.*' => 'exists:permissions,name'
         ]);
 
         $user->update([
@@ -87,22 +123,22 @@ class UserController extends Controller
             'email' => $validated['email']
         ]);
 
-        if (!empty($validated['password'])) {
-            $user->update(['password' => bcrypt($validated['password'])]);
+        // Sync roles
+        $user->syncRoles($validated['roles']);
+
+        // Sync permissions
+        if (isset($validated['permissions'])) {
+            $user->syncPermissions($validated['permissions']);
+        } else {
+            $user->syncPermissions([]); // Remove all direct permissions if none selected
         }
 
-        $user->syncRoles([$validated['role']]);
-
         return redirect()->route('admin.users.index')
-            ->with('success', 'User updated successfully.');
+            ->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'super-admin'])) {
-            abort(403);
-        }
-
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'You cannot delete your own account.');

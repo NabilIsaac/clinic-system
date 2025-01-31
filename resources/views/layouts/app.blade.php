@@ -12,8 +12,9 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="//unpkg.com/alpinejs" defer></script>  
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 <body class="font-sans antialiased">
     <div class="flex h-screen bg-gray-50">
@@ -22,9 +23,14 @@
         @endauth
 
         <!-- Page Content -->
-        <main class="@auth flex-1 pt-10 @endauth">
-            @yield('content')
+        <main class="@auth flex-1 @endauth">
+            <div class="container mx-auto px-4 py-6">
+                <x-alerts />
+                @yield('content')
+            </div>
         </main>
     </div>
+    @livewireScripts
+    @stack('scripts')
 </body>
 </html>

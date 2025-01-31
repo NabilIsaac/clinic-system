@@ -59,4 +59,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Appointment::class, 'patient_id');
     }
+
+    /**
+     * Get the employee record associated with the user.
+     */
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+    public function patient()
+    {
+        return $this->hasOne(Patient::class);
+    }
 }

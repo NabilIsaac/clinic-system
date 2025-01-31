@@ -15,6 +15,8 @@ class Appointment extends Model
         'doctor_id',
         'department_id',
         'appointment_datetime',
+        'start_time',
+        'end_time',
         'status',
         'reason',
         'notes',
@@ -22,16 +24,18 @@ class Appointment extends Model
 
     protected $casts = [
         'appointment_datetime' => 'datetime',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
     ];
 
     public function patient()
     {
-        return $this->belongsTo(User::class, 'patient_id');
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 
     public function doctor()
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(Employee::class, 'doctor_id');
     }
 
     public function department()

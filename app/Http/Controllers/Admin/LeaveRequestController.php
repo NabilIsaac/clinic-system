@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Employee;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LeaveRequest;
@@ -26,7 +26,7 @@ class LeaveRequestController extends Controller
             'status' => 'pending'
         ]);
 
-        return redirect()->route('employee.leave-requests.index')
+        return redirect()->route('admin.employee.leave-requests.index')
             ->with('success', 'Leave request submitted successfully.');
     }
 
@@ -36,6 +36,6 @@ class LeaveRequestController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('employee.leave-requests', compact('leaveRequests'));
+        return view('admin.employee.leave-requests', compact('leaveRequests'));
     }
 }

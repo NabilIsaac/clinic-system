@@ -7,11 +7,13 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Patient\DashboardController as PatientDashboardController;
-use App\Http\Controllers\Employee\EmployeePortalController;
+use App\Http\Controllers\Admin\EmployeePortalController;
 use App\Http\Controllers\ViewStateController;
-use App\Http\Controllers\Employee\LeaveRequestController;
+use App\Http\Controllers\Admin\LeaveRequestController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\StaffScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +55,10 @@ Route::middleware(['auth'])->group(function () {
     // Admin routes
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('users', \App\Http\Controllers\Admin\UsersController::class);
+        Route::resource('users', UserController::class);
+        Route::resource('departments', DepartmentController::class);
+        // Staff Schedule routes
+        Route::resource('staff-schedules', StaffScheduleController::class);
     });
 
     // Patient routes
@@ -78,12 +83,13 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('appointments', AppointmentController::class);
     Route::get('/doctor/{doctor}/schedule', [AppointmentController::class, 'getDoctorSchedule'])
         ->name('doctor.schedule');
+    Route::get('/appointment/calendar', [AppointmentController::class, 'calendar'])->name('appointments.calendar');
 
     // Employee Routes
     Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
         Route::get('/payroll', [EmployeePortalController::class, 'payroll'])->name('payroll');
-        Route::get('/leave-requests', [App\Http\Controllers\Employee\LeaveRequestController::class, 'index'])->name('leave-requests.index');
-        Route::post('/leave-requests', [App\Http\Controllers\Employee\LeaveRequestController::class, 'store'])->name('leave-requests.store');
+        Route::get('/leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
+        Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
         Route::get('/schedule', [EmployeePortalController::class, 'schedule'])->name('schedule');
         Route::get('/documents/payslips', [EmployeePortalController::class, 'payslips'])->name('documents.payslips');
         Route::get('/documents/contracts', [EmployeePortalController::class, 'contracts'])->name('documents.contracts');

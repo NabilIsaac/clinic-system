@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('password');
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->time('start_time')->after('appointment_datetime');
+            $table->time('end_time')->after('start_time');
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_active');
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->dropColumn(['start_time', 'end_time']);
         });
     }
 };

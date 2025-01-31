@@ -21,12 +21,17 @@ class AppointmentRequest extends FormRequest
                 'required_if:role,staff,admin',
                 'exists:patients,id'
             ],
-            'appointment_date' => [
+            'appointment_datetime' => [
                 'required',
                 'date',
                 'after_or_equal:' . Carbon::today()->format('Y-m-d')
             ],
-            'appointment_time' => ['required', 'date_format:H:i'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => [
+                'required',
+                'date_format:H:i',
+                'after:start_time'
+            ],
             'reason' => ['required', 'string', 'max:500'],
             'status' => ['sometimes', 'in:scheduled,completed,cancelled'],
             'notes' => ['nullable', 'string', 'max:1000'],
