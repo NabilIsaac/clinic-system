@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="space-y-6">
         <!-- Header -->
         <div class="sm:flex sm:items-center sm:justify-between">
@@ -10,9 +12,9 @@
                     </svg>
                     Export
                 </button>
-                <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <a href="{{ route('admin.inventory.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Add new item
-                </button>
+                </a>
             </div>
         </div>
 
@@ -145,6 +147,9 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Image
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Item
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -171,29 +176,27 @@
                         @foreach($items ?? [] as $item)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="h-10 w-10 flex-shrink-0">
-                                        <img class="h-10 w-10 rounded-lg" src="{{ $item->image_url }}" alt="">
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            {{ $item->name }}
-                                        </div>
-                                        <div class="text-sm text-gray-500">
-                                            SKU: {{ $item->sku }}
-                                        </div>
-                                    </div>
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ $item->image_url }}" alt="{{ $item->name }}">
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $item->category }}</div>
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ $item->name }}
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    SKU: {{ $item->sku }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $item->category->name }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $item->stock_quantity }}</div>
                                 <div class="text-sm text-gray-500">{{ $item->unit }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">${{ number_format($item->unit_price, 2) }}</div>
+                                <div class="text-sm text-gray-900">${{ number_format($item->price, 2) }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">${{ number_format($item->total_value, 2) }}</div>
@@ -257,4 +260,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

@@ -8,6 +8,7 @@ use Database\Seeders\RolesAndPermissionsSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\DepartmentsAndEmployeeTypesSeeder;
 use Database\Seeders\TestDataSeeder;
+use Database\Seeders\CategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             DepartmentsAndEmployeeTypesSeeder::class,
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
+            CategorySeeder::class,
             // TestDataSeeder::class,
         ]);
     }

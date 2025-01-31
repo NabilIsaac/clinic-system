@@ -14,6 +14,7 @@ use App\Http\Controllers\ViewStateController;
 use App\Http\Controllers\Admin\LeaveRequestController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\StaffScheduleController;
+use App\Http\Controllers\Admin\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('departments', DepartmentController::class);
         // Staff Schedule routes
         Route::resource('staff-schedules', StaffScheduleController::class);
+        
+        // Inventory routes
+        Route::resource('inventory', InventoryController::class);
+        Route::post('inventory/{id}/adjust-stock', [InventoryController::class, 'adjustStock'])->name('inventory.adjust-stock');
+        Route::get('inventory/export', [InventoryController::class, 'export'])->name('inventory.export');
     });
 
     // Patient routes

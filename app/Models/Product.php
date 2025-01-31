@@ -9,34 +9,28 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Drug extends Model implements HasMedia
+class Product extends Model implements HasMedia
 {
     use HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'name',
-        'generic_name',
         'description',
         'price',
         'stock_quantity',
         'unit',
         'category_id',
         'sku',
-        'reorder_level'
+        'reorder_level',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'stock_quantity' => 'integer',
-        'reorder_level' => 'integer'
+        'reorder_level' => 'integer',
     ];
 
     protected $appends = ['image_url'];
-
-    public function prescriptionDrugs()
-    {
-        return $this->hasMany(PrescriptionDrug::class);
-    }
 
     public function category()
     {
@@ -60,7 +54,7 @@ class Drug extends Model implements HasMedia
 
     public function getImageUrlAttribute()
     {
-        return $this->getFirstMediaUrl('image') ?: asset('images/default-drug.png');
+        return $this->getFirstMediaUrl('image') ?: asset('images/default-product.png');
     }
 
     public function registerMediaConversions(Media $media = null): void

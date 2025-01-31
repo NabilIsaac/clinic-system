@@ -149,7 +149,7 @@
                             </svg>
                             {{ __('Staff Scheduling') }}
                         </a>
-                        <a href="#"
+                        <a href="{{ route('admin.inventory.index') }}"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-3 text-gray-400">
