@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             DepartmentsAndEmployeeTypesSeeder::class,
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
-            TestDataSeeder::class,
+            // TestDataSeeder::class,
         ]);
     }
 }

@@ -1,18 +1,20 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800">
             {{ __('Doctor Dashboard') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <!-- Today's Schedule -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="mb-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold">{{ __("Today's Schedule") }}</h3>
-                        <a href="{{ route('appointments.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <a href="{{ route('appointments.create') }}" class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                             {{ __('New Appointment') }}
                         </a>
                     </div>
@@ -24,11 +26,11 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Time</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Patient</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Reason</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -59,7 +61,7 @@
                                                     {{ ucfirst($appointment->status) }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <td class="px-6 py-4 text-sm font-medium whitespace-nowrap">
                                                 <a href="{{ route('appointments.show', $appointment) }}" class="text-indigo-600 hover:text-indigo-900">View</a>
                                                 @if($appointment->status === 'scheduled')
                                                     <a href="{{ route('diagnoses.create', ['appointment' => $appointment->id]) }}" class="ml-4 text-green-600 hover:text-green-900">Start Consultation</a>
@@ -74,18 +76,18 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <!-- Upcoming Appointments -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <h3 class="text-lg font-semibold mb-4">{{ __('Upcoming Appointments') }}</h3>
+                        <h3 class="mb-4 text-lg font-semibold">{{ __('Upcoming Appointments') }}</h3>
                         
                         @if($upcomingAppointments->isEmpty())
                             <p class="text-gray-600">{{ __('No upcoming appointments.') }}</p>
                         @else
                             <div class="space-y-4">
                                 @foreach($upcomingAppointments as $appointment)
-                                    <div class="border rounded-lg p-4">
+                                    <div class="p-4 border rounded-lg">
                                         <div class="flex justify-between">
                                             <div>
                                                 <p class="font-medium">{{ $appointment->patient->user->name }}</p>
@@ -103,17 +105,17 @@
                 </div>
 
                 <!-- Recent Patients -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <h3 class="text-lg font-semibold mb-4">{{ __('Recent Patients') }}</h3>
+                        <h3 class="mb-4 text-lg font-semibold">{{ __('Recent Patients') }}</h3>
                         
                         @if($recentPatients->isEmpty())
                             <p class="text-gray-600">{{ __('No recent patients.') }}</p>
                         @else
                             <div class="space-y-4">
                                 @foreach($recentPatients as $patient)
-                                    <div class="border rounded-lg p-4">
-                                        <div class="flex justify-between items-start">
+                                    <div class="p-4 border rounded-lg">
+                                        <div class="flex items-start justify-between">
                                             <div>
                                                 <p class="font-medium">{{ $patient->user->name }}</p>
                                                 <p class="text-sm text-gray-600">ID: {{ $patient->patient_number }}</p>
@@ -129,4 +131,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

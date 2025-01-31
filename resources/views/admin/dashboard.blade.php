@@ -1,46 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+<div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
     <div class="p-6 text-gray-900">
-        <h2 class="text-2xl font-bold mb-4">{{ __('Admin Dashboard') }}</h2>
+        <h2 class="mb-1 text-2xl font-bold">{{ __('Hello, ') }}{{ Auth::user()->name }}! </h2>
+        <p class="mb-8 text-sm">{{ __('Welcome back.') }}</p>
 
         <!-- Key Metrics -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-100 p-4 rounded-lg text-center">
-                <h3 class="text-lg font-semibold mb-2">{{ __('Total Users') }}</h3>
+        <div class="grid grid-cols-2 gap-4 mb-6 md:grid-cols-4">
+            <div class="p-4 text-center bg-blue-100 rounded-lg">
+                <h3 class="mb-2 text-lg font-semibold">{{ __('Total Users') }}</h3>
                 <p class="text-3xl font-bold text-blue-600">{{ $totalUsers }}</p>
             </div>
-            <div class="bg-green-100 p-4 rounded-lg text-center">
-                <h3 class="text-lg font-semibold mb-2">{{ __('Today\'s Appointments') }}</h3>
+            <div class="p-4 text-center bg-green-100 rounded-lg">
+                <h3 class="mb-2 text-lg font-semibold">{{ __('Today\'s Appointments') }}</h3>
                 <p class="text-3xl font-bold text-green-600">{{ $todayAppointments }}</p>
             </div>
-            <div class="bg-purple-100 p-4 rounded-lg text-center">
-                <h3 class="text-lg font-semibold mb-2">{{ __('Active Departments') }}</h3>
+            <div class="p-4 text-center bg-purple-100 rounded-lg">
+                <h3 class="mb-2 text-lg font-semibold">{{ __('Active Departments') }}</h3>
                 <p class="text-3xl font-bold text-purple-600">{{ $activeDepartments }}</p>
             </div>
-            <div class="bg-yellow-100 p-4 rounded-lg text-center">
-                <h3 class="text-lg font-semibold mb-2">{{ __('Pending Requests') }}</h3>
+            <div class="p-4 text-center bg-yellow-100 rounded-lg">
+                <h3 class="mb-2 text-lg font-semibold">{{ __('Pending Requests') }}</h3>
                 <p class="text-3xl font-bold text-yellow-600">{{ $pendingRequests }}</p>
             </div>
         </div>
 
         <!-- Staff Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
             <!-- Department Statistics -->
-            <div class="bg-white p-4 rounded-lg shadow">
-                <h3 class="text-lg font-semibold mb-4">{{ __('Department Overview') }}</h3>
+            <div class="p-4 overflow-y-auto bg-white rounded-lg shadow h-52">
+                <h3 class="mb-4 text-lg font-semibold">{{ __('Department Overview') }}</h3>
                 <div class="space-y-4">
                     @foreach($departmentStats as $dept)
-                    <div class="border-b pb-2">
-                        <div class="flex justify-between items-center">
+                    <div class="pb-2 border-b">
+                        <div class="flex items-center justify-between">
                             <span class="font-medium">{{ $dept['name'] }}</span>
                             <span class="text-sm text-gray-600">
                                 {{ $dept['doctors'] }} {{ __('Doctors') }} | 
                                 {{ $dept['appointments'] }} {{ __('Appointments') }}
                             </span>
                         </div>
-                        <div class="mt-2 h-2 bg-gray-200 rounded">
+                        <div class="h-2 mt-2 bg-gray-200 rounded">
                             @php
                                 $percentage = $totalAppointments > 0 ? ($dept['appointments'] / $totalAppointments) * 100 : 0;
                             @endphp
@@ -52,16 +53,16 @@
             </div>
 
             <!-- Appointment Status Distribution -->
-            <div class="bg-white p-4 rounded-lg shadow">
-                <h3 class="text-lg font-semibold mb-4">{{ __('Appointment Status') }}</h3>
+            <div class="p-4 bg-white rounded-lg shadow">
+                <h3 class="mb-4 text-lg font-semibold">{{ __('Appointment Status') }}</h3>
                 <div class="space-y-4">
                     @foreach($appointmentStatusStats as $status => $count)
                     <div>
-                        <div class="flex justify-between items-center">
+                        <div class="flex items-center justify-between">
                             <span class="capitalize">{{ $status }}</span>
                             <span>{{ $count }}</span>
                         </div>
-                        <div class="mt-2 h-2 bg-gray-200 rounded">
+                        <div class="h-2 mt-2 bg-gray-200 rounded">
                             @php
                                 $totalAppts = array_sum($appointmentStatusStats);
                                 $percentage = $totalAppts > 0 ? ($count / $totalAppts) * 100 : 0;
@@ -80,37 +81,37 @@
             </div>
         </div>
         <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4  mb-6">
-            <div class="bg-blue-100 p-4 rounded-lg">
-                <h3 class="text-lg font-semibold mb-2">{{ __('Users') }}</h3>
+        <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+            <div class="p-4 bg-blue-100 rounded-lg">
+                <h3 class="mb-2 text-lg font-semibold">{{ __('Users') }}</h3>
                 <p class="text-sm text-gray-600">{{ __('Manage system users and roles') }}</p>
-                <a href="{{ route('admin.users.index') }}" class="mt-2 inline-block text-blue-600 hover:text-blue-800">{{ __('Manage Users') }} →</a>
+                <a href="{{ route('admin.users.index') }}" class="inline-block mt-2 text-blue-600 hover:text-blue-800">{{ __('Manage Users') }} →</a>
             </div>
 
-            <div class="bg-green-100 p-4 rounded-lg">
-                <h3 class="text-lg font-semibold mb-2">{{ __('Departments') }}</h3>
+            <div class="p-4 bg-green-100 rounded-lg">
+                <h3 class="mb-2 text-lg font-semibold">{{ __('Departments') }}</h3>
                 <p class="text-sm text-gray-600">{{ __('Manage hospital departments') }}</p>
-                <a href="#" class="mt-2 inline-block text-green-600 hover:text-green-800">{{ __('Manage Departments') }} →</a>
+                <a href="#" class="inline-block mt-2 text-green-600 hover:text-green-800">{{ __('Manage Departments') }} →</a>
             </div>
 
-            <div class="bg-purple-100 p-4 rounded-lg">
-                <h3 class="text-lg font-semibold mb-2">{{ __('Reports') }}</h3>
+            <div class="p-4 bg-purple-100 rounded-lg">
+                <h3 class="mb-2 text-lg font-semibold">{{ __('Reports') }}</h3>
                 <p class="text-sm text-gray-600">{{ __('View system analytics and reports') }}</p>
-                <a href="#" class="mt-2 inline-block text-purple-600 hover:text-purple-800">{{ __('View Reports') }} →</a>
+                <a href="#" class="inline-block mt-2 text-purple-600 hover:text-purple-800">{{ __('View Reports') }} →</a>
             </div>
         </div>
         <!-- Recent Activities -->
-        <div class="bg-white p-4 rounded-lg shadow">
-            <h3 class="text-lg font-semibold mb-4">{{ __('Recent Activities') }}</h3>
+        <div class="p-4 bg-white rounded-lg shadow">
+            <h3 class="mb-4 text-lg font-semibold">{{ __('Recent Activities') }}</h3>
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">Patient</th>
+                            <th class="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">Doctor</th>
+                            <th class="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">Department</th>
+                            <th class="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">Status</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">

@@ -22,7 +22,7 @@
         @endauth
 
         <!-- Page Content -->
-        <main class="@auth flex-1 @endauth">
+        <main class="@auth flex-1 pt-10 @endauth">
             @yield('content')
         </main>
     </div>

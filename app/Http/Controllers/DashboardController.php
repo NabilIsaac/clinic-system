@@ -17,7 +17,7 @@ class DashboardController extends Controller
         
         $appointments = Appointment::where('patient_id', $patient->id)
             ->with(['doctor.user', 'department'])
-            ->orderBy('appointment_date', 'desc')
+            ->orderBy('appointment_datetime', 'desc')
             ->take(5)
             ->get();
 
@@ -37,18 +37,18 @@ class DashboardController extends Controller
 
     public function doctorDashboard()
     {
-        $doctor = auth()->user()->employee;
-        
+        $doctor = auth()->user();
+        // dd($doctor);
         $todayAppointments = Appointment::where('doctor_id', $doctor->id)
-            ->whereDate('appointment_date', Carbon::today())
+            ->whereDate('appointment_datetime', Carbon::today())
             ->with(['patient.user', 'department'])
-            ->orderBy('appointment_time')
+            ->orderBy('appointment_datetime')
             ->get();
 
         $upcomingAppointments = Appointment::where('doctor_id', $doctor->id)
-            ->whereDate('appointment_date', '>', Carbon::today())
+            ->whereDate('appointment_datetime', '>', Carbon::today())
             ->with(['patient.user', 'department'])
-            ->orderBy('appointment_date')
+            ->orderBy('appointment_datetime')
             ->take(5)
             ->get();
 
@@ -69,9 +69,9 @@ class DashboardController extends Controller
         $department = $nurse->department;
 
         $todayAppointments = Appointment::where('department_id', $department->id)
-            ->whereDate('appointment_date', Carbon::today())
+            ->whereDate('appointment_datetime', Carbon::today())
             ->with(['patient.user', 'doctor.user'])
-            ->orderBy('appointment_time')
+            ->orderBy('appointment_datetime')
             ->get();
 
         return view('dashboard.nurse', compact('todayAppointments'));
@@ -79,9 +79,9 @@ class DashboardController extends Controller
 
     public function staffDashboard()
     {
-        $todayAppointments = Appointment::whereDate('appointment_date', Carbon::today())
+        $todayAppointments = Appointment::whereDate('appointment_datetime', Carbon::today())
             ->with(['patient.user', 'doctor.user', 'department'])
-            ->orderBy('appointment_time')
+            ->orderBy('appointment_datetime')
             ->get();
 
         $pendingBills = Bill::where('status', 'pending')
@@ -96,7 +96,7 @@ class DashboardController extends Controller
     public function adminDashboard()
     {
         $totalPatients = Patient::count();
-        $totalAppointments = Appointment::whereDate('appointment_date', Carbon::today())->count();
+        $totalAppointments = Appointment::whereDate('appointment_datetime', Carbon::today())->count();
         $pendingBills = Bill::where('status', 'pending')->count();
         
         $recentAppointments = Appointment::with(['patient.user', 'doctor.user', 'department'])
