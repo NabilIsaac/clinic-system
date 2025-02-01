@@ -13,15 +13,19 @@ return new class extends Migration
     {
         Schema::create('shoulder_joint_movement_assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hip_assessment_id')->constrained()->onDelete('cascade');
-            $table->enum('joint', ['hip', 'knee'])->nullable();
+            $table->foreignId('shoulder_assessment_id')->constrained()->onDelete('cascade');
+            $table->enum('joint', ['shoulder', 'elbow', 'wrist'])->nullable();
             $table->enum('movement', [
                 'flexion',
                 'extension',
                 'abduction',
                 'adduction',
                 'internal_rotation',
-                'external_rotation'
+                'external_rotation',
+                'pronation',
+                'supination',
+                'ulnar_deviation',
+                'radial_deviation'
             ])->nullable();
             
             // Right Side Measurements
