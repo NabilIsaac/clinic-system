@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('patient_health_infos', function (Blueprint $table) {
             $table->id();
-            
+            $table->foreignId('patient_id')->constrained()->onDelete('cascade');
+
             // Basic Health Info
             $table->enum('hpt_dm', ['HPT', 'DM', 'Internal fixation', 'Other'])->nullable();
             $table->text('hpt_other')->nullable();

@@ -16,7 +16,7 @@
     </div>
     <form action="{{ route('doctor.patient-assessments.store') }}" method="POST" id="assessmentForm">
         @csrf
-        <div class="space-y-6 bg-white p-6 rounded-t-lg">
+        <div class="space-y-6 shadow-sm bg-white p-6 rounded-t-lg">
 
        
         {{-- Basic Health Information --}}
@@ -25,7 +25,7 @@
         {{-- Disease Type Selection --}}
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700">Disease Type</label>
-            <select name="disease_type" id="diseaseType" class="mt-1 p-2 sm:text-sm w-6/12 block rounded-md border-gray-300">
+            <select name="disease_type" id="diseaseType" class="mt-1 shadow-sm p-2 sm:text-sm w-6/12 block rounded-md border-gray-300">
                 <option value="">Select Disease Type</option>
                 <option value="spine">Spine</option>
                 <option value="stroke">Stroke</option>

@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('stroke_assessments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_health_info_id')->constrained()->onDelete('cascade');
             
             // Basic stroke information
             $table->date('date_of_onset_of_stroke');

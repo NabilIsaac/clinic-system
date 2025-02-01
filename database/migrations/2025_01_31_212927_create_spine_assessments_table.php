@@ -10,6 +10,8 @@ return new class extends Migration
     {
         Schema::create('spine_assessments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_health_info_id')->constrained()->onDelete('cascade');
+
             // Posture section
             $table->text('gait')->nullable();
             $table->text('vegetative_changes')->nullable();

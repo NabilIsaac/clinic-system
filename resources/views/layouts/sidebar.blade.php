@@ -1,4 +1,21 @@
-<div class="inset-y-0 left-0 w-64 h-screen bg-white border-r">
+<div class="inset-y-0 left-0 md:w-64 bg-white border-r">
+    <button x-data @click="$dispatch('toggle-sidebar')" class="fixed top-4 left-4 z-50 lg:hidden">
+        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+    
+    <!-- Sidebar -->
+    <div x-data="{ isOpen: false }" 
+         @toggle-sidebar.window="isOpen = !isOpen"
+         :class="{'translate-x-0': isOpen, '-translate-x-full': !isOpen, 'lg:translate-x-0': true}"
+         class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out lg:translate-x-0">
+        
+        <!-- Overlay -->
+        {{-- <div x-show="isOpen" 
+             @click="isOpen = false" 
+             class="fixed inset-0 bg-black bg-opacity-50 transition-opacity lg:hidden">
+        </div> --}}
     <div class="fixed w-64">
         <div x-data="{
             showUserModal: false,
@@ -321,4 +338,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

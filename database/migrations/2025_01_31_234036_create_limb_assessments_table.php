@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('limb_assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('assessment_id')->constrained();
+            $table->foreignId('stroke_assessment_id')->constrained()->onDelete('cascade');
 
             $table->enum('limb_type', ['upper', 'lower']);
             $table->enum('muscle_tone', ['Spastic', 'Normal', 'Flaccid']);

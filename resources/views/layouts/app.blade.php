@@ -16,14 +16,14 @@
     @stack('styles')
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen bg-gray-50">
+    <div class="flex bg-gray-50">
         @auth
             @include('layouts.sidebar')
         @endauth
 
         <!-- Page Content -->
         <main class="@auth flex-1 @endauth">
-            <div class="container mx-auto px-4 py-6">
+            <div class="container overflow-y-scroll mx-auto px-4 py-6">
                 <x-alerts />
                 @yield('content')
                 @role('doctor')

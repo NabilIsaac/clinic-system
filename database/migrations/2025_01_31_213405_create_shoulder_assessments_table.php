@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('shoulder_assessments', function (Blueprint $table) {
             $table->id();
-
+            $table->foreignId('patient_health_info_id')->constrained()->onDelete('cascade');
+            
             // General Section
             $table->text('observation')->nullable();
             $table->text('limitations')->nullable();
