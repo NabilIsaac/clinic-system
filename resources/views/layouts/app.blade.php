@@ -16,7 +16,7 @@
     @stack('styles')
 </head>
 <body class="font-sans antialiased">
-    <div class="flex bg-gray-50">
+    <div class="flex h-auto bg-gray-50">
         @auth
             @include('layouts.sidebar')
         @endauth

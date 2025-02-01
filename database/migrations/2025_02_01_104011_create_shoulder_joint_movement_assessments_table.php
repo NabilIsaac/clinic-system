@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('shoulder_joint_movement_assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shoulder_assessment_id')->constrained()->onDelete('cascade');
+            $table->foreignId('shoulder_assessment_id')
+            ->constrained('shoulder_assessments')
+            ->onDelete('cascade')
+            ->name('shoulder_joint_mov_shoulder_assessment_fk');
+            
             $table->enum('joint', ['shoulder', 'elbow', 'wrist'])->nullable();
             $table->enum('movement', [
                 'flexion',
