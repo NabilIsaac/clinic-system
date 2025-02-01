@@ -66,7 +66,7 @@
 
         <!-- Quick Actions -->
         <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
                 <h3 class="text-lg font-semibold mb-2">{{ __('Appointments') }}</h3>
                 <p class="text-sm text-gray-600 mb-4">{{ __('View and manage your appointments') }}</p>
@@ -84,7 +84,7 @@
                 <h3 class="text-lg font-semibold mb-2">{{ __('Prescriptions') }}</h3>
                 <p class="text-sm text-gray-600 mb-4">{{ __('Access your prescriptions') }}</p>
                 <div class="flex space-x-2">
-                    <a href="{{ route('prescriptions.index') }}" class="inline-flex items-center px-3 py-2 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200">
+                    <a href="{{ route('patient.prescriptions.index') }}" class="inline-flex items-center px-3 py-2 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200">
                         {{ __('View All') }}
                     </a>
                     <a href="#" class="inline-flex items-center px-3 py-2 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200">
@@ -97,12 +97,24 @@
                 <h3 class="text-lg font-semibold mb-2">{{ __('Medical Records') }}</h3>
                 <p class="text-sm text-gray-600 mb-4">{{ __('View your medical history') }}</p>
                 <div class="flex space-x-2">
-                    <a href="{{ route('medical-records.index') }}" class="inline-flex items-center px-3 py-2 border border-purple-300 text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200">
+                    <a href="#" class="inline-flex items-center px-3 py-2 border border-purple-300 text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200">
                         {{ __('View All') }}
                     </a>
                     <a href="#" class="inline-flex items-center px-3 py-2 border border-purple-300 text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200">
                         {{ __('Download') }}
                     </a>
+                </div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                <h3 class="text-lg font-semibold mb-2">{{ __('Bills') }}</h3>
+                <p class="text-sm text-gray-600 mb-4">{{ __('View your Bills') }}</p>
+                <div class="flex space-x-2">
+                    <a href="{{route('patient.bills.index')}}" class="inline-flex items-center px-3 py-2 border border-purple-300 text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200">
+                        {{ __('View All') }}
+                    </a>
+                    {{-- <a href="{{ route('patient.bills.download') }}" class="inline-flex items-center px-3 py-2 border border-purple-300 text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200">
+                        {{ __('Download') }}
+                    </a> --}}
                 </div>
             </div>
         </div>

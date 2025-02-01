@@ -12,12 +12,13 @@ class Bill extends Model
 
     protected $fillable = [
         'patient_id',
+        'checkup_id',
         'bill_number',
-        'bill_date',
         'total_amount',
         'paid_amount',
         'status',
-        'notes',
+        'due_date',
+        'notes'
     ];
 
     protected $casts = [
@@ -31,18 +32,28 @@ class Bill extends Model
         return $this->belongsTo(Patient::class);
     }
 
-    public function billItems()
+    public function checkup()
+    {
+        return $this->belongsTo(Checkup::class);
+    }
+
+    public function items()
     {
         return $this->hasMany(BillItem::class);
     }
 
-    public function transactions()
+    public function payments()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Payment::class);
     }
 
     public function getRemainingAmountAttribute()
     {
         return $this->total_amount - $this->paid_amount;
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

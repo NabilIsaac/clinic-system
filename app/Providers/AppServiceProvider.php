@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register blade directives for roles and permissions
         Blade::directive('role', function ($role) {
-            return "<?php if(auth()->check() && auth()->user()->hasRole({$role})): ?>";
+            return "<?php if(auth()->check() && auth()->user()->hasRole($role)): ?>";
         });
 
         Blade::directive('endrole', function () {

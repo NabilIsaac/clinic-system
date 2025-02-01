@@ -12,7 +12,6 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    <script src="//unpkg.com/alpinejs" defer></script>  
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
@@ -27,6 +26,9 @@
             <div class="container mx-auto px-4 py-6">
                 <x-alerts />
                 @yield('content')
+                @role('doctor')
+                    <x-checkup-button />
+                @endrole
             </div>
         </main>
     </div>

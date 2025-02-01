@@ -60,7 +60,7 @@ class Drug extends Model implements HasMedia
 
     public function getImageUrlAttribute()
     {
-        return $this->getFirstMediaUrl('image') ?: asset('images/default-drug.png');
+        return $this->getFirstMediaUrl('image') ?: asset('assets/images/placeholder.jpeg');
     }
 
     public function registerMediaConversions(Media $media = null): void

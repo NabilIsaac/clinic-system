@@ -15,10 +15,12 @@ class BillItem extends Model
         'billable_id',
         'description',
         'amount',
+        'quantity',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'quantity' => 'integer',
     ];
 
     public function bill()
@@ -29,5 +31,10 @@ class BillItem extends Model
     public function billable()
     {
         return $this->morphTo();
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->amount * $this->quantity;
     }
 }

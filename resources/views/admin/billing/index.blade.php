@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="space-y-6">
         <!-- Header -->
         <div class="sm:flex sm:items-center sm:justify-between">
@@ -6,9 +8,9 @@
                 <h1 class="text-2xl font-bold text-gray-900">Billing</h1>
             </div>
             <div class="mt-4 sm:mt-0">
-                <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <a href="{{ route('admin.billing.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Create invoice
-                </button>
+                </a>
             </div>
         </div>
 
@@ -124,4 +126,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

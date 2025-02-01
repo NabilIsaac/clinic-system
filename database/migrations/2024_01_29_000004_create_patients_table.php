@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('blood_type')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('height')->nullable();
             $table->text('allergies')->nullable();
             $table->text('chronic_diseases')->nullable();
             $table->decimal('bmi', 4, 2)->nullable();

@@ -11,9 +11,10 @@ return new class extends Migration
         Schema::create('bill_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bill_id')->constrained()->onDelete('cascade');
-            $table->morphs('billable'); // For appointment, test, prescription, etc.
+            $table->morphs('billable')->nullable(); // For appointment, test, prescription, etc.
             $table->string('description');
             $table->decimal('amount', 10, 2);
+            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }

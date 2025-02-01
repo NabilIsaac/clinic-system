@@ -14,8 +14,12 @@ return new class extends Migration
         Schema::create('checkup_procedures', function (Blueprint $table) {
             $table->id();
             $table->foreignId('checkup_id')->constrained()->onDelete('cascade');
-            $table->foreignId('procedure_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->decimal('cost', 10, 2)->default(0);
+            $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

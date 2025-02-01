@@ -152,7 +152,7 @@
                                 </label>
                                 <div class="mt-1 flex items-center">
                                     <div class="w-32 h-32 border-2 border-gray-300 border-dashed rounded-lg overflow-hidden">
-                                        <img id="preview" src="{{ asset('images/placeholder.png') }}" alt="Preview" class="w-full h-full object-cover">
+                                        <img id="preview" src="{{ asset('assets/images/placeholder.jpeg') }}" alt="Preview" class="w-full h-full object-cover">
                                     </div>
                                     <div class="ml-5">
                                         <div class="relative">

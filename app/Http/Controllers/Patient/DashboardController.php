@@ -14,9 +14,29 @@ class DashboardController extends Controller
 
     public function index()
     {
-        if (!auth()->user()->hasRole('patient')) {
+        $user = auth()->user();
+
+        if (!$user->hasRole('patient')) {
             abort(403);
         }
-        return view('patient.dashboard');
+
+        $appointments = $user->patientAppointments()
+            ->with(['doctor.user', 'department'])
+            ->latest('appointment_datetime')
+            ->take(5)
+            ->get();
+
+        $prescriptions = $user->prescriptions()
+            ->with(['prescriptionDrugs.drug', 'diagnosis'])
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $bills = $user->bills()
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('patient.dashboard', compact('appointments', 'prescriptions', 'bills'));
     }
 }

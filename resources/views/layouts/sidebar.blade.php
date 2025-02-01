@@ -24,8 +24,10 @@
                     </div>
                     <div class="ml-3 text-left">
                         <span class="block text-sm font-medium text-gray-900">{{ Auth::user()->name }}</span>
+                        @role(['doctor', 'nurse', 'admin', 'super-admin'])
                         <span class="text-xs text-gray-500"
                             x-text="currentView === 'work' ? 'Work Account' : 'Employee Profile'"></span>
+                        @endrole
                     </div>
                     <svg class="w-5 h-5 ml-auto text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                         fill="currentColor">
@@ -37,7 +39,7 @@
                 <!-- User Modal -->
                 <div x-show="showUserModal" @click.away="showUserModal = false"
                     class="absolute right-0 z-50 w-64 mt-2 bg-white border border-gray-100 rounded-lg shadow-lg">
-
+                    @role(['doctor', 'nurse', 'admin', 'super-admin'])
                     <!-- Account Switch -->
                     <div class="p-3">
                         <h4 class="mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">Account Type</h4>
@@ -68,6 +70,7 @@
                             </button>
                         </div>
                     </div>
+                    @endrole
 
                     <div class="border-t border-gray-100"></div>
 
@@ -91,7 +94,7 @@
             <!-- Navigation -->
             <div class="flex-1 overflow-y-auto">
                 <!-- Work Account Navigation -->
-                <nav x-show="currentView === 'work'" class="p-4 space-y-1">
+                <nav x-show="currentView === 'work'" class="p-4 space-y-3">
                     @role('admin|super-admin')
                         <a href="{{ route('admin.dashboard') }}"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-50' : '' }}">
@@ -158,14 +161,23 @@
                             </svg>
                             {{ __('Inventory & supply management') }}
                         </a>
-                        <a href="#"
+                        <a href="{{ route('admin.billing.index') }}"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-3 text-gray-400">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
                             </svg>
-                            {{ __('Billing & payments') }}
+                            {{ __('Billings') }}
+                        </a>
+                        <a href="{{ route('admin.payments.index') }}"
+                            class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-3 text-gray-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                            </svg>
+                            {{ __('Payments') }}
                         </a>
                     @endrole
 
@@ -178,6 +190,14 @@
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                             {{ __('Patients') }}
+                        </a>
+                        <a href="{{ route('doctor.patient-assessments.index') }}"
+                            class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-3 text-gray-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
+                              </svg>
+                              
+                            {{ __('Patient Assessments') }}
                         </a>
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
@@ -196,6 +216,13 @@
                                     d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
                             </svg>
                             {{ __('Procedures') }}
+                        </a>
+                        <a href="{{ route('doctor.checkups.index') }}"
+                            class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 {{ request()->routeIs('doctor.checkups.*') ? 'bg-gray-50' : '' }}">
+                            <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            Checkups
                         </a>
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
@@ -220,7 +247,7 @@
                 </nav>
 
                 <!-- Employee Profile Navigation -->
-                <nav x-show="currentView === 'employee'" class="p-4 space-y-1">
+                <nav x-show="currentView === 'employee'" class="p-4 space-y-3">
                     <h3 class="px-3 mb-3 text-xs font-semibold tracking-wider text-gray-500 uppercase">
                         {{ __('Employee Portal') }}
                     </h3>

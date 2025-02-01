@@ -15,6 +15,13 @@ use App\Http\Controllers\Admin\LeaveRequestController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\StaffScheduleController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Patient\PrescriptionController;
+use App\Http\Controllers\Patient\BillController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\BillController as AdminBillController;
+use App\Http\Controllers\Patient\AppointmentController as PatientAppointmentController;
+use App\Http\Controllers\Doctor\CheckupController;
+use App\Http\Controllers\Patient\HealthAssessmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +31,6 @@ use App\Http\Controllers\Admin\InventoryController;
 
 // Authentication Routes
 Auth::routes();
-
-// Home Route
-// Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Profile Routes
 Route::middleware('auth')->group(function () {
@@ -54,9 +58,13 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Admin routes
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['role:admin|super-admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('users', UserController::class);
+        Route::resource('billing', AdminBillController::class);
+        Route::resource('payments', PaymentController::class);
+        Route::get('payment-reports',[ PaymentController::class, 'report'])->name('payments.report');
+        // Route::get('payment-reports',[ PaymentController::class, 'report'])->name('payments.report.export');
         Route::resource('departments', DepartmentController::class);
         // Staff Schedule routes
         Route::resource('staff-schedules', StaffScheduleController::class);
@@ -67,10 +75,25 @@ Route::middleware(['auth'])->group(function () {
         Route::get('inventory/export', [InventoryController::class, 'export'])->name('inventory.export');
     });
 
-    // Patient routes
-    Route::prefix('patient')->name('patient.')->group(function () {
-        Route::get('/dashboard', [PatientDashboardController::class, 'index'])->name('dashboard');
+    Route::middleware(['role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
+        Route::get('/checkups', [CheckupController::class, 'index'])->name('checkups.index');
+        Route::post('/checkups', [CheckupController::class, 'store'])->name('checkups.store');
+        Route::get('/checkups/{checkup}', [CheckupController::class, 'show'])->name('checkups.show');
+        Route::put('/checkups/{checkup}', [CheckupController::class, 'update'])->name('checkups.update');
+        Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
+        Route::resource('patient-assessments', HealthAssessmentController::class);
     });
+
+    
+    Route::middleware(['role:patient'])->prefix('patient')->name('patient.')->group(function () {
+        Route::get('/dashboard', [PatientDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+        Route::resource('prescriptions', PrescriptionController::class);
+        Route::get('/bills', [BillController::class, 'index'])->name('bills.index');
+        Route::get('/bills/{bill}', [BillController::class, 'show'])->name('bills.show');
+        Route::get('/bills/{bill}/download', [BillController::class, 'download'])->name('bills.download');
+    });
+
 
     // Role-specific dashboard routes
     Route::get('/doctor/dashboard', [DashboardController::class, 'doctorDashboard'])

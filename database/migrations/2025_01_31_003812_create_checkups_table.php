@@ -13,14 +13,19 @@ return new class extends Migration
     {
         Schema::create('checkups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->nullable()->constrained('patients');
-            $table->foreignId('creator_id')->nullable()->constrained('users');
+            $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
             $table->string('bp')->nullable();
             $table->dateTime('walk-in_datetime')->nullable();
             $table->string('total_amount')->nullable();
             $table->string('description')->nullable();
-            $table->longText('notes')->nullable();
+            $table->json('symptoms')->nullable();
+            $table->text('diagnosis')->nullable();
+            $table->text('notes')->nullable();
+            $table->dateTime('date');
+            $table->enum('status', ['pending', 'in-progress', 'completed', 'cancelled'])->default('pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
