@@ -134,38 +134,7 @@
             </div>
 
             <!-- Pagination -->
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <span class="text-sm text-gray-700">Show</span>
-                        <select class="mx-2 rounded-md border-gray-300 py-1 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option>10</option>
-                            <option>25</option>
-                            <option>50</option>
-                        </select>
-                        <span class="text-sm text-gray-700">per page</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-700">
-                            Showing 1-10 of 20 results
-                        </span>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                Previous
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                1
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                2
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                Next
-                            </a>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+            <x-pagination :items="$reports" />
         </div>
     </div>
 </x-app-layout>

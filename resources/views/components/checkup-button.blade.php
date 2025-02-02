@@ -63,7 +63,7 @@
                     <!-- Patient Selection -->
                     <div>
                         <label for="patient" class="block text-sm font-medium text-gray-700">Patient</label>
-                        <select id="patient" name="patient_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        <select id="patient" name="patient_id" class="mt-1 block w-full p-2 border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
                             <option value="">Select a patient</option>
                         </select>
                     </div>
@@ -73,7 +73,7 @@
                         <label class="block text-sm font-medium text-gray-700">Symptoms</label>
                         <div class="mt-2 space-y-2" id="symptoms-container">
                             <div class="flex items-center space-x-2">
-                                <input type="text" name="symptoms[]" class="flex-1 focus:ring-blue-500 focus:border-blue-500 block w-full min-w-0 rounded-md sm:text-sm border-gray-300">
+                                <input type="text" name="symptoms[]" class="flex-1 focus:ring-blue-500 border p-2 border-gray-300 focus:border-blue-500 block w-full min-w-0 rounded-md sm:text-sm">
                                 <button type="button" onclick="addSymptom()" class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
@@ -86,13 +86,13 @@
                     <!-- Diagnosis -->
                     <div>
                         <label for="diagnosis" class="block text-sm font-medium text-gray-700">Diagnosis</label>
-                        <textarea id="diagnosis" name="diagnosis" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                        <textarea id="diagnosis" name="diagnosis" rows="3" class="mt-1 border p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
                     </div>
 
                     <!-- Notes -->
                     <div>
                         <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                        <textarea id="notes" name="notes" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                        <textarea id="notes" name="notes" rows="2" class="mt-1 border p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
                     </div>
 
                     <!-- Submit Button -->
@@ -117,7 +117,7 @@
         const div = document.createElement('div');
         div.className = 'flex items-center space-x-2';
         div.innerHTML = `
-            <input type="text" name="symptoms[]" class="flex-1 focus:ring-blue-500 focus:border-blue-500 block w-full min-w-0 rounded-md sm:text-sm border-gray-300">
+            <input type="text" name="symptoms[]" class="flex-1 border p-2 focus:ring-blue-500 focus:border-blue-500 block w-full min-w-0 rounded-md sm:text-sm border-gray-300">
             <button type="button" onclick="this.parentElement.remove()" class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                 <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />

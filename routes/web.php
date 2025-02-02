@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\BillController as AdminBillController;
 use App\Http\Controllers\Patient\AppointmentController as PatientAppointmentController;
 use App\Http\Controllers\Doctor\CheckupController;
+use App\Http\Controllers\Doctor\PatientController as DoctorPatientController;
 use App\Http\Controllers\Patient\HealthAssessmentController;
 
 /*
@@ -43,19 +44,17 @@ Route::middleware('auth')->group(function () {
 // Dashboard Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
-        if (auth()->user()->hasAnyRole(['admin', 'super-admin'])) {
-            return redirect()->route('admin.dashboard');
-        } elseif (auth()->user()->hasRole('patient')) {
-            return redirect()->route('patient.dashboard');
-        } elseif (auth()->user()->hasRole('doctor')) {
-            return redirect()->route('doctor.dashboard');
-        } elseif (auth()->user()->hasRole('nurse')) {
-            return redirect()->route('nurse.dashboard');
-        } elseif (auth()->user()->hasRole('staff')) {
-            return redirect()->route('staff.dashboard');
-        }
-        return redirect()->route('patient.dashboard');
-    })->name('dashboard');
+        $role = auth()->user()->roles->first()->name;
+        return redirect()->route('dashboard', ['prefix' => $role]);
+    });
+
+    // Single dashboard route with dynamic prefix
+    Route::get('{prefix}/dashboard', [DashboardController::class, 'index'])
+        ->where('prefix', 'super-admin|admin|patient|doctor|nurse|staff')
+        ->name('dashboard');
+
+    Route::post('/switch-role', [App\Http\Controllers\UserController::class, 'switchRole'])
+    ->name('user.switch-role');
 
     // Admin routes
     Route::middleware(['role:admin|super-admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -76,6 +75,16 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
+        Route::resource('patients', DoctorPatientController::class)->only(['index', 'show']);
+        Route::get('/checkups', [CheckupController::class, 'index'])->name('checkups.index');
+        Route::post('/checkups', [CheckupController::class, 'store'])->name('checkups.store');
+        Route::get('/checkups/{checkup}', [CheckupController::class, 'show'])->name('checkups.show');
+        Route::put('/checkups/{checkup}', [CheckupController::class, 'update'])->name('checkups.update');
+        Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
+        Route::resource('patient-assessments', HealthAssessmentController::class);
+    });
+    Route::middleware(['role:nurse|receptionist'])->prefix('nurse')->name('nurse.')->group(function () {
+        Route::resource('patients', DoctorPatientController::class);
         Route::get('/checkups', [CheckupController::class, 'index'])->name('checkups.index');
         Route::post('/checkups', [CheckupController::class, 'store'])->name('checkups.store');
         Route::get('/checkups/{checkup}', [CheckupController::class, 'show'])->name('checkups.show');

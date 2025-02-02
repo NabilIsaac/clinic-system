@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
             'email' => 'superadmin@medicareplus.com',
             'password' => Hash::make('password'),
         ]);
-        $superAdmin->assignRole('super-admin');
+        $superAdmin->assignRole(['super-admin', 'admin', 'doctor']);
         Employee::create([
             'user_id' => $superAdmin->id,
             'employee_type_id' => EmployeeType::where('name', 'Administrator')->first()->id,
