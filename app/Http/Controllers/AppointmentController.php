@@ -80,9 +80,13 @@ class AppointmentController extends Controller
     public function store(AppointmentRequest $request)
     {
         $appointment = new Appointment($request->validated());
-        
+
         if (auth()->user()->hasRole('patient')) {
-            $appointment->patient_id = auth()->user()->patient->id;
+            $patient = Patient::where('user_id', auth()->id())->first();
+            $appointment->patient_id = $patient->id;
+        } elseif (auth()->user()->hasRole('doctor')) {
+            $doctorEmployee = Employee::where('user_id', auth()->id())->first();
+            $appointment->doctor_id = $doctorEmployee->id;
         }
 
         $appointment->save();

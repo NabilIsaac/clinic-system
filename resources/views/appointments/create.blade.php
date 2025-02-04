@@ -21,7 +21,7 @@
                 <div class="mb-6">
                     <label for="department_id" class="block text-sm font-medium text-gray-700 mb-2">Department</label>
                     <select name="department_id" id="department_id" required 
-                        class="mt-1 block w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        class="mt-1 block shadow-sm w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
                         <option value="">Select Department</option>
                         @foreach($departments as $department)
                             <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
@@ -35,28 +35,30 @@
                 </div>
 
                 <!-- Doctor Selection -->
-                <div class="mb-6">
-                    <label for="doctor_id" class="block text-sm font-medium text-gray-700 mb-2">Doctor</label>
-                    <select name="doctor_id" id="doctor_id" required 
-                        class="mt-1 block w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                        <option value="">Select Doctor</option>
-                        @foreach($doctors as $doctor)
-                            <option value="{{ $doctor['id'] }}" 
-                                data-department="{{ $doctor['department'] }}"
-                                {{ old('doctor_id') == $doctor['id'] ? 'selected' : '' }}>
-                                Dr. {{ $doctor['name'] }} - {{ $doctor['specialization'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('doctor_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+                @role(['nurse'| 'receptionist'|'admin'|'super-admin'])
+                    <div class="mb-6">
+                        <label for="doctor_id" class="block text-sm font-medium text-gray-700 mb-2">Doctor</label>
+                        <select name="doctor_id" id="doctor_id" required 
+                            class="mt-1 block w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            <option value="">Select Doctor</option>
+                            @foreach($doctors as $doctor)
+                                <option value="{{ $doctor['id'] }}" 
+                                    data-department="{{ $doctor['department'] }}"
+                                    {{ old('doctor_id') == $doctor['id'] ? 'selected' : '' }}>
+                                    Dr. {{ $doctor['name'] }} - {{ $doctor['specialization'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('doctor_id')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endrole
                 <!-- Patient Selection -->
                 <div class="mb-6">
                     <label for="patient_id" class="block text-sm font-medium text-gray-700 mb-2">Patient</label>
                     <select name="patient_id" id="patient_id" required 
-                        class="mt-1 block w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        class="mt-1 block shadow-sm w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
                         <option value="">Select patient</option>
                         @foreach($patients as $patient)
                             <option value="{{ $patient['id'] }}" 

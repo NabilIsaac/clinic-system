@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('appointments', function (Blueprint $table) {
-            $table->time('start_time')->after('appointment_datetime');
-            $table->time('end_time')->after('start_time');
+        Schema::create('excuse_duties', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -22,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('appointments', function (Blueprint $table) {
-            $table->dropColumn(['start_time', 'end_time']);
-        });
+        Schema::dropIfExists('excuse_duties');
     }
 };

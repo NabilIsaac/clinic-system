@@ -21,6 +21,9 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\BillController as AdminBillController;
 use App\Http\Controllers\Patient\AppointmentController as PatientAppointmentController;
 use App\Http\Controllers\Doctor\CheckupController;
+use App\Http\Controllers\Doctor\ExcuseDutyController;
+use App\Http\Controllers\Doctor\ReferralFormController;
+use App\Http\Controllers\Doctor\RequestFormController;
 use App\Http\Controllers\Doctor\PatientController as DoctorPatientController;
 use App\Http\Controllers\Patient\HealthAssessmentController;
 
@@ -76,19 +79,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
         Route::resource('patients', DoctorPatientController::class)->only(['index', 'show']);
-        Route::get('/checkups', [CheckupController::class, 'index'])->name('checkups.index');
-        Route::post('/checkups', [CheckupController::class, 'store'])->name('checkups.store');
-        Route::get('/checkups/{checkup}', [CheckupController::class, 'show'])->name('checkups.show');
-        Route::put('/checkups/{checkup}', [CheckupController::class, 'update'])->name('checkups.update');
+        Route::resource('excuse-duty', ExcuseDutyController::class);
+        Route::resource('referral-forms', ReferralFormController::class);
+        Route::resource('request-forms', RequestFormController::class);
+        Route::resource('checkups', CheckupController::class);
         Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
         Route::resource('patient-assessments', HealthAssessmentController::class);
     });
     Route::middleware(['role:nurse|receptionist'])->prefix('nurse')->name('nurse.')->group(function () {
         Route::resource('patients', DoctorPatientController::class);
-        Route::get('/checkups', [CheckupController::class, 'index'])->name('checkups.index');
-        Route::post('/checkups', [CheckupController::class, 'store'])->name('checkups.store');
-        Route::get('/checkups/{checkup}', [CheckupController::class, 'show'])->name('checkups.show');
-        Route::put('/checkups/{checkup}', [CheckupController::class, 'update'])->name('checkups.update');
+        Route::resource('checkups', CheckupController::class);
         Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
         Route::resource('patient-assessments', HealthAssessmentController::class);
     });

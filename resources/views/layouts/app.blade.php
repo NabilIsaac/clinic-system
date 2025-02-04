@@ -26,7 +26,7 @@
             <div class="container overflow-y-scroll mx-auto px-4 py-6">
                 <x-alerts />
                 @yield('content')
-                @role('doctor')
+                @role(['doctor', 'nurse'])
                     <x-checkup-button />
                 @endrole
             </div>

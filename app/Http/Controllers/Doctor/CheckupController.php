@@ -5,18 +5,35 @@ namespace App\Http\Controllers\Doctor;
 use App\Http\Controllers\Controller;
 use App\Models\Checkup;
 use App\Models\User;
+use App\Models\Drug;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CheckupController extends Controller
 {
     public function index()
     {
-        $checkups = auth()->user()->doctorCheckups()
-            ->with(['patient', 'procedures'])
-            ->latest()
-            ->paginate(10);
+        $checkups = Checkup::with(['patient', 'doctor'])
+        ->filter(request(['search', 'status', 'date_from', 'date_to']))
+        ->where('doctor_id', auth()->id())
+        ->latest()
+        ->paginate(10);
 
-        return view('doctor.checkups.index', compact('checkups'));
+        return view('doctor.checkups.index', [
+            'checkups' => $checkups,
+        ]);
+    }
+
+    public function create()
+    {
+        $patients = User::role('patient')->get();
+        $drugs = Drug::all();
+        $products = Product::all();
+        return view('doctor.checkups.create', [
+            'patients' => $patients,
+            'drugs' => $drugs,
+            'products' => $products
+        ]);
     }
 
     public function store(Request $request)

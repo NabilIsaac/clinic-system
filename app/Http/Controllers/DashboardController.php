@@ -9,6 +9,7 @@ use App\Models\Doctor;
 use App\Models\Bill;
 use App\Models\User;
 use App\Models\Department;
+use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -68,24 +69,29 @@ class DashboardController extends Controller
 
     public function doctorDashboard()
     {
+        // dd(auth()->user()->doctor);
         $data = $this->getDefaultData();
-        $doctor = auth()->user()->doctor;
+        $doctorEmployee = Employee::where('user_id', auth()->id())->first();
+    
+        if (!$doctorEmployee) {
+            return redirect()->back()->with('error', 'Doctor profile not found.');
+        }
         
-        $data['todayAppointments'] = Appointment::where('doctor_id', $doctor->id)
+        $data['todayAppointments'] = Appointment::where('doctor_id', $doctorEmployee->id)
             ->whereDate('appointment_datetime', Carbon::today())
             ->with(['patient.user', 'department'])
             ->orderBy('appointment_datetime')
             ->get();
 
-        $data['upcomingAppointments'] = Appointment::where('doctor_id', $doctor->id)
+        $data['upcomingAppointments'] = Appointment::where('doctor_id', $doctorEmployee->id)
             ->whereDate('appointment_datetime', '>', Carbon::today())
             ->with(['patient.user', 'department'])
             ->orderBy('appointment_datetime')
             ->take(5)
             ->get();
 
-        $data['recentPatients'] = Patient::whereHas('appointments', function($query) use ($doctor) {
-            $query->where('doctor_id', $doctor->id);
+        $data['recentPatients'] = Patient::whereHas('appointments', function($query) use ($doctorEmployee) {
+            $query->where('doctor_id', $doctorEmployee->id);
         })
         ->with('user')
         ->latest()

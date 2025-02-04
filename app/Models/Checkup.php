@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Checkup extends Model
 {
@@ -39,5 +40,29 @@ class Checkup extends Model
     public function prescription()
     {
         return $this->hasOne(Prescription::class);
+    }
+
+    public function scopeFilter(Builder $query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            $query->whereHas('patient', function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            })->orWhereHas('doctor', function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            });
+        });
+
+        $query->when($filters['status'] ?? false, function ($query, $status) {
+            $query->where('status', $status);
+        });
+
+        $query->when($filters['date_from'] ?? false, function ($query, $date) {
+            $query->whereDate('created_at', '>=', $date);
+        });
+
+        $query->when($filters['date_to'] ?? false, function ($query, $date) {
+            $query->whereDate('created_at', '<=', $date);
+        });
     }
 }
