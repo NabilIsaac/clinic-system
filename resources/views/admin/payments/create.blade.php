@@ -7,12 +7,12 @@
     <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
             <h1 class="text-xl font-semibold text-gray-900">Record Payment</h1>
-            <p class="mt-2 text-sm text-gray-700">Bill #{{ $bill->bill_number }}</p>
+            <p class="mt-2 text-sm text-gray-700">Bill #{{ $billing->bill_number }}</p>
         </div>
     </div>
 
     <div class="mt-8 max-w-2xl">
-        <form action="{{ route('admin.payments.store', $bill) }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.payments.store', $billing) }}" method="POST" class="space-y-6">
             @csrf
 
             <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
@@ -20,7 +20,7 @@
                     <div class="md:col-span-1">
                         <h3 class="text-lg font-medium leading-6 text-gray-900">Payment Details</h3>
                         <p class="mt-1 text-sm text-gray-500">
-                            Remaining amount: ${{ number_format($bill->remaining_amount, 2) }}
+                            Remaining amount: ${{ number_format($billing->remaining_amount, 2) }}
                         </p>
                     </div>
 
@@ -28,10 +28,10 @@
                         <div>
                             <label for="amount" class="block text-sm font-medium text-gray-700">Amount</label>
                             <div class="mt-1">
-                                <input type="number" step="0.01" name="amount" id="amount" required
-                                    max="{{ $bill->remaining_amount }}"
+                                <input type="number" step="0.01" name="amount" id="amount" required min="0.01"
+                                    max="{{ $billing->remaining_amount }}"
                                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                    value="{{ old('amount', $bill->remaining_amount) }}">
+                                    value="{{ old('amount', $billing->remaining_amount) }}">
                             </div>
                             @error('amount')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -52,7 +52,7 @@
                             @enderror
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <label for="transaction_id" class="block text-sm font-medium text-gray-700">Transaction ID</label>
                             <div class="mt-1">
                                 <input type="text" name="transaction_id" id="transaction_id"
@@ -62,13 +62,13 @@
                             @error('transaction_id')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div>
                             <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
                             <div class="mt-1">
                                 <textarea id="notes" name="notes" rows="3"
-                                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ old('notes') }}</textarea>
+                                    class="shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ old('notes') }}</textarea>
                             </div>
                             @error('notes')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -79,7 +79,7 @@
             </div>
 
             <div class="flex justify-end">
-                <a href="{{ route('admin.bills.show', $bill) }}"
+                <a href="{{ route('admin.billing.show', $billing) }}"
                     class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Cancel
                 </a>

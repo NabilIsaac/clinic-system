@@ -73,4 +73,11 @@ class Drug extends Model implements HasMedia
             ->width(400)
             ->height(400);
     }
+    
+    // If you need to access the drugs directly
+    public function drugs()
+    {
+        return $this->belongsToMany(Drug::class, 'checkup_medications')
+            ->withPivot(['quantity', 'dosage', 'unit_price', 'total_price']);
+    }
 }

@@ -26,6 +26,7 @@ use App\Http\Controllers\Doctor\ReferralFormController;
 use App\Http\Controllers\Doctor\RequestFormController;
 use App\Http\Controllers\Doctor\PatientController as DoctorPatientController;
 use App\Http\Controllers\Patient\HealthAssessmentController;
+use App\Http\Controllers\Admin\PayslipController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,14 +63,30 @@ Route::middleware(['auth'])->group(function () {
     // Admin routes
     Route::middleware(['role:admin|super-admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
         Route::resource('users', UserController::class);
+
         Route::resource('billing', AdminBillController::class);
-        Route::resource('payments', PaymentController::class);
+        Route::get('/billing/patient-items/{patient}', [AdminBillController::class, 'getPatientItems'])
+        ->name('admin.billing.patient-items');
+
+        Route::resource('payments', PaymentController::class)->only(['index', 'show', 'destroy']);
+        Route::get('/payments/create/{billing}', [PaymentController::class, 'create'])->name('payments.create');
+        Route::post('/payments/store/{billing}', [PaymentController::class, 'store'])->name('payments.store');
+        // Route::post('/payments/show/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+        Route::patch('payments/{payment}/void', [PaymentController::class, 'void'])->name('payments.void');
         Route::get('payment-reports',[ PaymentController::class, 'report'])->name('payments.report');
         // Route::get('payment-reports',[ PaymentController::class, 'report'])->name('payments.report.export');
+
         Route::resource('departments', DepartmentController::class);
+
         // Staff Schedule routes
         Route::resource('staff-schedules', StaffScheduleController::class);
+
+        Route::resource('payslips', PayslipController::class);
+        Route::get('/payslips/bulk-create', [PayslipController::class, 'bulkCreate'])->name('payslips.bulk-create');
+        Route::post('payslips/bulk-store', [PayslipController::class, 'bulkStore'])->name('payslips.bulk-store');
+        Route::get('payslips/{payslip}/download', [PayslipController::class, 'downloadPDF'])->name('payslips.download');
         
         // Inventory routes
         Route::resource('inventory', InventoryController::class);
@@ -86,6 +103,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
         Route::resource('patient-assessments', HealthAssessmentController::class);
     });
+
     Route::middleware(['role:nurse|receptionist'])->prefix('nurse')->name('nurse.')->group(function () {
         Route::resource('patients', DoctorPatientController::class);
         Route::resource('checkups', CheckupController::class);
@@ -130,6 +148,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
         Route::get('/schedule', [EmployeePortalController::class, 'schedule'])->name('schedule');
         Route::get('/documents/payslips', [EmployeePortalController::class, 'payslips'])->name('documents.payslips');
+        Route::post('payslips/{payslip}/issue', [PayslipController::class, 'issue'])->name('payslips.issue');
         Route::get('/documents/contracts', [EmployeePortalController::class, 'contracts'])->name('documents.contracts');
         Route::get('/documents/tax-documents', [EmployeePortalController::class, 'taxDocuments'])->name('documents.tax-documents');
     });

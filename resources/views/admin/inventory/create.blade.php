@@ -85,7 +85,7 @@
                                     Description
                                 </label>
                                 <div class="mt-1">
-                                    <textarea name="description" id="description" rows="3" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full h-10 px-2 border sm:text-sm border-gray-300 rounded-md"></textarea>
+                                    <textarea name="description" id="description" rows="3" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 block w-full h-10 border sm:text-sm border-gray-300 rounded-md"></textarea>
                                 </div>
                             </div>
 

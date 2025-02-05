@@ -10,16 +10,18 @@ class Checkup extends Model
     protected $fillable = [
         'patient_id',
         'doctor_id',
-        'symptoms',
-        'diagnosis',
+        'bp',
+        'total_amount',
+        'reason',
+        'visit_history',
         'notes',
-        'date',
         'status'
     ];
     
     protected $casts = [
         'date' => 'datetime',
         'symptoms' => 'array',
+        'total_amount' => 'decimal:2'
     ];
 
     public function patient()
@@ -30,6 +32,25 @@ class Checkup extends Model
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctor_id');
+    }
+
+    public function medications()
+    {
+        return $this->hasMany(CheckupMedication::class);
+    }
+    
+    public function products()
+    {
+        return $this->hasMany(CheckupProduct::class);
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            'in-progress',
+            'completed',
+            'cancelled'
+        ];
     }
 
     public function procedures()

@@ -14,6 +14,7 @@ class Bill extends Model
         'patient_id',
         'checkup_id',
         'bill_number',
+        'bill_date',
         'total_amount',
         'paid_amount',
         'status',
@@ -23,13 +24,21 @@ class Bill extends Model
 
     protected $casts = [
         'bill_date' => 'date',
+        'due_date' => 'date',
         'total_amount' => 'decimal:2',
         'paid_amount' => 'decimal:2',
     ];
 
     public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(User::class, 'patient_id')
+        ->whereHas('patient')
+        ->with('patient');
+    }
+
+    public function getPatientDetailsAttribute()
+    {
+        return $this->patient;
     }
 
     public function checkup()

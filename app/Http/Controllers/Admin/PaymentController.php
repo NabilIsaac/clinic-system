@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -18,44 +19,46 @@ class PaymentController extends Controller
         return view('admin.payments.index', compact('payments'));
     }
 
-    public function create(Bill $bill)
+    public function create(Bill $billing)
     {
-        if ($bill->status === 'paid') {
-            return redirect()->route('admin.bills.show', $bill)
+        if ($billing->status === 'paid') {
+            return redirect()->route('admin.billing.show', $billing)
                 ->with('error', 'This bill is already paid in full.');
         }
 
-        return view('admin.payments.create', compact('bill'));
+        return view('admin.payments.create', compact('billing'));
     }
 
-    public function store(Request $request, Bill $bill)
+    public function store(Request $request, Bill $billing)
     {
-        if ($bill->status === 'paid') {
-            return redirect()->route('admin.bills.show', $bill)
+        if ($billing->status === 'paid') {
+            return redirect()->route('admin.billing.show', $billing)
                 ->with('error', 'This bill is already paid in full.');
         }
 
         $request->validate([
-            'amount' => ['required', 'numeric', 'min:1', "max:{$bill->remaining_amount}"],
+            'amount' => ['required', 'numeric', 'gt:0'],
             'payment_method' => ['required', 'in:cash,card,bank_transfer,insurance'],
-            'transaction_id' => ['nullable', 'string'],
             'notes' => ['nullable', 'string']
         ]);
 
-        $payment = $bill->payments()->create([
+        $transactionId = 'PMT-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(6));
+        
+        $payment = Payment::create([
+            'bill_id' => $billing->id,
             'amount' => $request->amount,
             'payment_method' => $request->payment_method,
-            'transaction_id' => $request->transaction_id,
+            'transaction_id' => $transactionId,
             'status' => 'completed',
-            'notes' => $request->notes
+            // 'notes' => $request->notes
         ]);
 
         // Update bill
-        $bill->paid_amount += $request->amount;
-        $bill->status = $bill->paid_amount >= $bill->total_amount ? 'paid' : 'partial';
-        $bill->save();
+        $billing->paid_amount += $request->amount;
+        $billing->status = $billing->paid_amount >= $billing->total_amount ? 'paid' : 'partial';
+        $billing->save();
 
-        return redirect()->route('admin.bills.show', $bill)
+        return redirect()->route('admin.billing.show', $billing)
             ->with('success', 'Payment recorded successfully.');
     }
 

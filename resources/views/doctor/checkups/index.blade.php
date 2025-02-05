@@ -122,79 +122,83 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($checkups as $checkup)
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-4 pl-4">
-                                    <input type="checkbox"
-                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                </td>
-                                <td class="px-3 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                            <span
-                                                class="text-base font-medium text-gray-600">{{ substr($checkup->patient->name, 0, 2) }}</span>
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-base font-medium text-gray-900">{{ $checkup->patient->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ $checkup->patient->email }}</div>
-                                        </div>
+                        @forelse ($checkups as $checkup)
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-4 pl-4">
+                                <input type="checkbox"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            </td>
+                            <td class="px-3 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <span
+                                            class="text-base font-medium text-gray-600">{{ substr($checkup->patient->name, 0, 2) }}</span>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $checkup->doctor->name }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        @if($checkup->status === 'scheduled') bg-yellow-100 text-yellow-800
-                                        @elseif($checkup->status === 'completed') bg-green-100 text-green-800
-                                        @elseif($checkup->status === 'cancelled') bg-red-100 text-red-800
-                                        @else bg-gray-100 text-gray-800
-                                        @endif">
-                                        {{ ucfirst($checkup->status) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $checkup->created_at }}</div>
-                                </td>
-                                <td class="px-3 space-x-4 py-4 flex whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('doctor.checkups.show', $checkup) }}"
-                                        class="text-gray-400 hover:text-gray-500">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M6 11C6 8.17157 6 6.75736 6.87868 5.87868C7.75736 5 9.17157 5 12 5H15C17.8284 5 19.2426 5 20.1213 5.87868C21 6.75736 21 8.17157 21 11V16C21 18.8284 21 20.2426 20.1213 21.1213C19.2426 22 17.8284 22 15 22H12C9.17157 22 7.75736 22 6.87868 21.1213C6 20.2426 6 18.8284 6 16V11Z" stroke="#64748B" stroke-width="1.5"/>
-                                            <path d="M6 19C4.34315 19 3 17.6569 3 16V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H15C16.6569 2 18 3.34315 18 5" stroke="#64748B" stroke-width="1.5"/>
+                                    <div class="ml-4">
+                                        <div class="text-base font-medium text-gray-900">{{ $checkup->patient->name }}</div>
+                                        <div class="text-sm text-gray-500">{{ $checkup->patient->email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ $checkup->doctor->name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    @if($checkup->status === 'scheduled') bg-yellow-100 text-yellow-800
+                                    @elseif($checkup->status === 'completed') bg-green-100 text-green-800
+                                    @elseif($checkup->status === 'cancelled') bg-red-100 text-red-800
+                                    @else bg-gray-100 text-gray-800
+                                    @endif">
+                                    {{ ucfirst($checkup->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ $checkup->created_at }}</div>
+                            </td>
+                            <td class="px-3 space-x-4 py-4 flex whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ route('doctor.checkups.show', $checkup) }}"
+                                    class="text-gray-400 hover:text-gray-500">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 11C6 8.17157 6 6.75736 6.87868 5.87868C7.75736 5 9.17157 5 12 5H15C17.8284 5 19.2426 5 20.1213 5.87868C21 6.75736 21 8.17157 21 11V16C21 18.8284 21 20.2426 20.1213 21.1213C19.2426 22 17.8284 22 15 22H12C9.17157 22 7.75736 22 6.87868 21.1213C6 20.2426 6 18.8284 6 16V11Z" stroke="#64748B" stroke-width="1.5"/>
+                                        <path d="M6 19C4.34315 19 3 17.6569 3 16V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H15C16.6569 2 18 3.34315 18 5" stroke="#64748B" stroke-width="1.5"/>
+                                    </svg>
+
+                                </a>
+                                <a href="{{ route('doctor.checkups.edit', $checkup) }}"
+                                    class="text-gray-400 hover:text-gray-500">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7566 2.62145C16.5852 0.792851 19.55 0.792851 21.3786 2.62145C23.2072 4.45005 23.2072 7.41479 21.3786 9.24339L11.8933 18.7287C11.3514 19.2706 11.0323 19.5897 10.6774 19.8665C10.2592 20.1927 9.80655 20.4725 9.32766 20.7007C8.92136 20.8943 8.49334 21.037 7.76623 21.2793L4.43511 22.3897L3.63303 22.6571C2.98247 22.8739 2.26522 22.7046 1.78032 22.2197C1.29542 21.7348 1.1261 21.0175 1.34296 20.367L2.72068 16.2338C2.96303 15.5067 3.10568 15.0787 3.29932 14.6724C3.52755 14.1935 3.80727 13.7409 4.13354 13.3226C4.41035 12.9677 4.72939 12.6487 5.27137 12.1067L14.7566 2.62145ZM4.40051 20.8201L7.24203 19.8729C8.03314 19.6092 8.36927 19.4958 8.68233 19.3466C9.06287 19.1653 9.42252 18.943 9.75492 18.6837C10.0284 18.4704 10.2801 18.2205 10.8698 17.6308L18.4393 10.0614C17.6506 9.78321 16.6346 9.26763 15.6835 8.31651C14.7324 7.36538 14.2168 6.34939 13.9387 5.56075L6.36917 13.1302C5.77951 13.7199 5.52959 13.9716 5.3163 14.2451C5.05704 14.5775 4.83476 14.9371 4.65341 15.3177C4.50421 15.6307 4.3908 15.9669 4.12709 16.758L3.17992 19.5995L4.40051 20.8201ZM15.1554 4.34404C15.1896 4.519 15.2474 4.75684 15.3438 5.03487C15.561 5.66083 15.9712 6.48288 16.7442 7.25585C17.5171 8.02881 18.3392 8.43903 18.9651 8.6562C19.2432 8.75266 19.481 8.81046 19.656 8.84466L20.3179 8.18272C21.5607 6.93991 21.5607 4.92492 20.3179 3.68211C19.0751 2.4393 17.0601 2.4393 15.8173 3.68211L15.1554 4.34404Z" fill="#64748B"/>
+                                    </svg>
+
+                                </a>
+                                <form action="{{ route('doctor.checkups.destroy', $checkup) }}" method="POST"
+                                    class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-gray-400 hover:text-gray-500"
+                                        onclick="return confirm('Are you sure you want to delete this user?')">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20.5001 6H3.5" stroke="#64748B" stroke-width="1.5"
+                                                stroke-linecap="round" />
+                                            <path
+                                                d="M18.8332 8.5L18.3732 15.3991C18.1962 18.054 18.1077 19.3815 17.2427 20.1907C16.3777 21 15.0473 21 12.3865 21H11.6132C8.95235 21 7.62195 21 6.75694 20.1907C5.89194 19.3815 5.80344 18.054 5.62644 15.3991L5.1665 8.5"
+                                                stroke="#64748B" stroke-width="1.5" stroke-linecap="round" />
+                                            <path
+                                                d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6"
+                                                stroke="#64748B" stroke-width="1.5" />
                                         </svg>
 
-                                    </a>
-                                    <a href="{{ route('doctor.checkups.edit', $checkup) }}"
-                                        class="text-gray-400 hover:text-gray-500">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7566 2.62145C16.5852 0.792851 19.55 0.792851 21.3786 2.62145C23.2072 4.45005 23.2072 7.41479 21.3786 9.24339L11.8933 18.7287C11.3514 19.2706 11.0323 19.5897 10.6774 19.8665C10.2592 20.1927 9.80655 20.4725 9.32766 20.7007C8.92136 20.8943 8.49334 21.037 7.76623 21.2793L4.43511 22.3897L3.63303 22.6571C2.98247 22.8739 2.26522 22.7046 1.78032 22.2197C1.29542 21.7348 1.1261 21.0175 1.34296 20.367L2.72068 16.2338C2.96303 15.5067 3.10568 15.0787 3.29932 14.6724C3.52755 14.1935 3.80727 13.7409 4.13354 13.3226C4.41035 12.9677 4.72939 12.6487 5.27137 12.1067L14.7566 2.62145ZM4.40051 20.8201L7.24203 19.8729C8.03314 19.6092 8.36927 19.4958 8.68233 19.3466C9.06287 19.1653 9.42252 18.943 9.75492 18.6837C10.0284 18.4704 10.2801 18.2205 10.8698 17.6308L18.4393 10.0614C17.6506 9.78321 16.6346 9.26763 15.6835 8.31651C14.7324 7.36538 14.2168 6.34939 13.9387 5.56075L6.36917 13.1302C5.77951 13.7199 5.52959 13.9716 5.3163 14.2451C5.05704 14.5775 4.83476 14.9371 4.65341 15.3177C4.50421 15.6307 4.3908 15.9669 4.12709 16.758L3.17992 19.5995L4.40051 20.8201ZM15.1554 4.34404C15.1896 4.519 15.2474 4.75684 15.3438 5.03487C15.561 5.66083 15.9712 6.48288 16.7442 7.25585C17.5171 8.02881 18.3392 8.43903 18.9651 8.6562C19.2432 8.75266 19.481 8.81046 19.656 8.84466L20.3179 8.18272C21.5607 6.93991 21.5607 4.92492 20.3179 3.68211C19.0751 2.4393 17.0601 2.4393 15.8173 3.68211L15.1554 4.34404Z" fill="#64748B"/>
-                                        </svg>
-
-                                    </a>
-                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-gray-400 hover:text-gray-500"
-                                            onclick="return confirm('Are you sure you want to delete this user?')">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M20.5001 6H3.5" stroke="#64748B" stroke-width="1.5"
-                                                    stroke-linecap="round" />
-                                                <path
-                                                    d="M18.8332 8.5L18.3732 15.3991C18.1962 18.054 18.1077 19.3815 17.2427 20.1907C16.3777 21 15.0473 21 12.3865 21H11.6132C8.95235 21 7.62195 21 6.75694 20.1907C5.89194 19.3815 5.80344 18.054 5.62644 15.3991L5.1665 8.5"
-                                                    stroke="#64748B" stroke-width="1.5" stroke-linecap="round" />
-                                                <path
-                                                    d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6"
-                                                    stroke="#64748B" stroke-width="1.5" />
-                                            </svg>
-
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                            <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                No checkups found.
+                            </td>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

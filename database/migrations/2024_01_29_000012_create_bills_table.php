@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->onDelete('cascade');
+            $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('checkup_id')->nullable()->constrained()->onDelete('set null');
             $table->string('bill_number')->unique();
             $table->date('bill_date');
@@ -21,6 +21,15 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            // $table->string('bill_type');
+            // $table->string('bill_number')->unique();
+            // $table->date('period_start');
+            // $table->date('period_end');
+            // $table->date('due_date');
+            // $table->decimal('amount', 10, 2);
+            // $table->text('notes')->nullable();
+            // $table->string('status')->default('pending');
+            
         });
     }
 

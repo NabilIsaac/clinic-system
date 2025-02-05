@@ -31,5 +31,11 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             // TestDataSeeder::class,
         ]);
+        $this->call(CheckupsTableSeeder::class);
+        $this->call(DrugsTableSeeder::class);
+        $this->call(ProductsTableSeeder::class);
+        $this->call(MediaTableSeeder::class);
+        // $this->call(CategoriesTableSeeder::class);
+        $this->call(BillItemsTableSeeder::class);
     }
 }

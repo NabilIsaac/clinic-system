@@ -67,4 +67,11 @@ class Product extends Model implements HasMedia
             ->width(400)
             ->height(400);
     }
+
+     // If you need to access the products directly
+     public function productsRelation()
+     {
+         return $this->belongsToMany(Product::class, 'checkup_products')
+             ->withPivot(['quantity', 'unit_price', 'total_price']);
+     }
 }

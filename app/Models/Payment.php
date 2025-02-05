@@ -14,7 +14,8 @@ class Payment extends Model
         'amount',
         'payment_method',
         'transaction_id',
-        'status'
+        'status',
+        // 'notes'
     ];
 
     public function bill()

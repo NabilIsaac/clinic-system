@@ -11,16 +11,17 @@ class BillItem extends Model
 
     protected $fillable = [
         'bill_id',
-        'billable_type',
-        'billable_id',
-        'description',
-        'amount',
+        'name',
+        'type',
         'quantity',
+        'unit_price',
+        'total_price',
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
         'quantity' => 'integer',
+        'unit_price' => 'decimal:2',
+        'total_price' => 'decimal:2',
     ];
 
     public function bill()
@@ -28,13 +29,8 @@ class BillItem extends Model
         return $this->belongsTo(Bill::class);
     }
 
-    public function billable()
-    {
-        return $this->morphTo();
-    }
-
     public function getTotalAttribute()
     {
-        return $this->amount * $this->quantity;
+        return $this->quantity * $this->unit_price;
     }
 }

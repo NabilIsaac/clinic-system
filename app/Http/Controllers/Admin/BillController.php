@@ -2,22 +2,36 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Bill;
-use App\Models\BillItem;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Checkup;
+use App\Models\BillItem;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBillRequest;
+
 
 class BillController extends Controller
 {
     public function index()
     {
-        $bills = Bill::with(['patient', 'items', 'payments'])
-            ->latest()
+        $bills = Bill::latest()
             ->paginate(15);
 
-        return view('admin.billing.index', compact('bills'));
+            $totalBills = $bills->count();
+            $pendingAmount = $bills->where('status', 'pending')->sum('total_amount');
+            $paidAmount = $bills->where('status', 'paid')->sum('paid_amount');
+            $voidedAmount = $bills->where('status', 'voided')->sum('amount');
+        
+            return view('admin.billing.index', compact(
+                'bills',
+                'totalBills',
+                'pendingAmount',
+                'paidAmount',
+                'voidedAmount'
+            ));
     }
 
     public function create()
@@ -26,48 +40,46 @@ class BillController extends Controller
         return view('admin.billing.create', compact('patients'));
     }
 
-    public function store(Request $request)
+    public function store(StoreBillRequest $request)
     {
-        $request->validate([
-            'patient_id' => 'required|exists:users,id',
-            'due_date' => 'required|date|after:today',
-            'items' => 'required|array|min:1',
-            'items.*.description' => 'required|string',
-            'items.*.amount' => 'required|numeric|min:0',
-            'items.*.quantity' => 'required|integer|min:1',
-            'notes' => 'nullable|string'
-        ]);
+        $validatedData = $request->validated();
+        
+        DB::beginTransaction();
+        try {
+            // Generate bill number
+            $validatedData['bill_number'] = 'BILL-' . strtoupper(Str::random(8));
+            $validatedData['bill_date'] = now();
+            $validatedData['total_amount'] = $request->total_amount;
+            $validatedData['paid_amount'] = 0;
+            $validatedData['status'] = 'unpaid';
 
-        $totalAmount = collect($request->items)->sum(function ($item) {
-            return $item['amount'] * $item['quantity'];
-        });
+            $bill = Bill::create($validatedData);
 
-        $bill = Bill::create([
-            'patient_id' => $request->patient_id,
-            'bill_number' => 'BILL-' . strtoupper(Str::random(8)),
-            'total_amount' => $totalAmount,
-            'paid_amount' => 0,
-            'status' => 'unpaid',
-            'due_date' => $request->due_date,
-            'notes' => $request->notes
-        ]);
+            // Store bill items
+            foreach ($request->items as $item) {
+                $bill->items()->create([
+                    'name' => $item['name'],
+                    'type' => $item['type'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                    'total_price' => $item['total_price']
+                ]);
+            }
 
-        foreach ($request->items as $item) {
-            $bill->items()->create([
-                'description' => $item['description'],
-                'amount' => $item['amount'],
-                'quantity' => $item['quantity']
-            ]);
+            DB::commit();
+
+            return redirect()->route('admin.billing.show', $bill)
+                ->with('success', 'Bill created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error creating bill: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.billing.show', $bill)
-            ->with('success', 'Bill created successfully.');
     }
 
-    public function show(Bill $bill)
+    public function show(Bill $billing)
     {
-        $bill->load(['patient', 'items', 'payments', 'checkup']);
-        return view('admin.billing.show', compact('bill'));
+        $billing->load(['patient', 'items', 'payments', 'checkup']);
+        return view('admin.billing.show', compact('billing'));
     }
 
     public function edit(Bill $bill)
@@ -131,5 +143,45 @@ class BillController extends Controller
         $bill->delete();
         return redirect()->route('admin.billing.index')
             ->with('success', 'Bill deleted successfully.');
+    }
+
+    public function getPatientItems($patientId)
+    {
+        $checkups = Checkup::where('patient_id', $patientId)
+            ->where('status', 'completed')
+            ->with(['medications.drug', 'products.product'])
+            ->get();
+
+        $items = [];
+        $totalAmount = 0;
+
+        foreach ($checkups as $checkup) {
+            foreach ($checkup->medications as $medication) {
+                $items[] = [
+                    'name' => $medication->drug->name,
+                    'type' => 'Medication',
+                    'quantity' => $medication->quantity,
+                    'unit_price' => $medication->unit_price,
+                    'total_price' => $medication->total_price,
+                ];
+            }
+
+            foreach ($checkup->products as $product) {
+                $items[] = [
+                    'name' => $product->product->name,
+                    'type' => 'Product',
+                    'quantity' => $product->quantity,
+                    'unit_price' => $product->unit_price,
+                    'total_price' => $product->total_price,
+                ];
+            }
+
+            $totalAmount += $checkup->total_amount;
+        }
+
+        return response()->json([
+            'items' => $items,
+            'total_amount' => $totalAmount
+        ]);
     }
 }
