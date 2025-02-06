@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -45,59 +49,61 @@ class UserController extends Controller
     {
         $roles = Role::all();
         $permissions = Permission::all();
-        return view('admin.employee.create', compact('roles', 'permissions'));
+        $departments = Department::all();
+
+        return view('admin.employee.create', compact('roles', 'permissions', 'departments'));
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,name',
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,name',
-            'department_id' => 'required|exists:departments,id',
-            'phone' => 'required|string',
-            'address' => 'required|string',
-            'joining_date' => 'required|date',
-            'salary' => 'required|numeric|min:0',
-            'account_name' => 'nullable|string|max:255',
-            'account_number' => 'nullable|string|max:255',
-            'bank_name' => 'nullable|string|max:255',
-            'bank_branch' => 'nullable|string|max:255'
-        ]);
+        return DB::transaction(function () use ($request) {
+            $validated = $request->validated();
+    
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone_number' => $validated['phone_number'],
+                'address' => $validated['address'],
+                'gender' => $validated['gender'],
+                'occupation' => $validated['occupation'] ?? null,
+                'marital_status' => $validated['marital_status'] ?? null,
+                'date_of_birth' => $validated['date_of_birth'] ?? null,
+                'password' => Hash::make('password'),
+            ]);
+    
+            // Create employee record
+            $user->employee()->create([
+                'user_id' => $user->id,
+                'department_id' => $validated['department_id'],
+                'joining_date' => $validated['joining_date'],
+                'salary' => $validated['salary'],
+                'account_name' => $validated['account_name'] ?? null,
+                'account_number' => $validated['account_number'] ?? null,
+                'bank_name' => $validated['bank_name'] ?? null,
+                'bank_branch' => $validated['bank_branch'] ?? null,
+                'emergency_contact_name' => $validated['emergency_contact_name'] ?? null,
+                'emergency_contact_number' => $validated['emergency_contact_number'] ?? null,
+                'relationship' => $validated['relationship'] ?? null,
+                'qualifications' => $validated['qualifications'] ?? null,
+                'specialization' => $validated['specialization'] ?? null
+            ]);
+    
+            // Assign roles
+            $user->assignRole($validated['roles']);
+    
+            // Assign additional permissions if any
+            if (isset($validated['permissions'])) {
+                $user->givePermissionTo($validated['permissions']);
+            }
+    
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Employee created successfully');
+        });
+    }
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password'])
-        ]);
-
-        // Create employee record
-        $user->employee()->create([
-            'department_id' => $validated['department_id'],
-            'phone' => $validated['phone'],
-            'address' => $validated['address'],
-            'joining_date' => $validated['joining_date'],
-            'salary' => $validated['salary'],
-            'account_name' => $validated['account_name'] ?? null,
-            'account_number' => $validated['account_number'] ?? null,
-            'bank_name' => $validated['bank_name'] ?? null,
-            'bank_branch' => $validated['bank_branch'] ?? null
-        ]);
-
-        // Assign roles
-        $user->assignRole($validated['roles']);
-
-        // Assign additional permissions if any
-        if (isset($validated['permissions'])) {
-            $user->givePermissionTo($validated['permissions']);
-        }
-
-        return redirect()->route('admin.users.index')
-            ->with('success', 'Employee created successfully');
+    public function show(User $user)
+    {
+        return view('admin.employee.show', compact('user'));
     }
 
     public function edit(User $user)

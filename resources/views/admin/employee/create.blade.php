@@ -25,24 +25,39 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Personal Information</h3>
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">First Name</label>
-                                <input type="text" name="first_name" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Last Name</label>
-                                <input type="text" name="last_name" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" name="name" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"value="{{ old('name') }}">
+                                @error('name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" name="email" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <input type="email" name="email" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"value="{{ old('email') }}">
+                                @error('email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Phone Number</label>
-                                <input type="tel" name="phone" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <input type="tel" name="phone_number" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"value="{{ old('phone_number') }}">
+                                @error('phone_number')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                                <input type="date" name="birth_date" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <input type="date" name="date_of_birth" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"value="{{ old('date_of_birth') }}">
+                                @error('date_of_birth')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Address</label>
+                                <input type="text" name="address" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"value="{{ old('email') }}">
+                                @error('address')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Gender</label>
@@ -52,6 +67,9 @@
                                     <option value="female">Female</option>
                                     <option value="other">Other</option>
                                 </select>
+                                @error('gender')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -68,10 +86,20 @@
                                 <label class="block text-sm font-medium text-gray-700">Department</label>
                                 <select name="department_id" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                     <option value="">Select department</option>
-                                    @foreach($departments ?? [] as $department)
+                                    @foreach($departments as $department)
                                         <option value="{{ $department->id }}">{{ $department->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('department_id')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Joining Date</label>
+                                <input type="date" name="joining_date" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                @error('joining_date')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Roles</label>
@@ -84,6 +112,9 @@
                                         </div>
                                     @endforeach
                                 </div>
+                                @error('roles')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="mt-4">
                                 <label class="block text-sm font-medium text-gray-700">Additional Permissions</label>
@@ -96,10 +127,9 @@
                                         </div>
                                     @endforeach
                                 </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Join Date</label>
-                                <input type="date" name="join_date" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                @error('permissions')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -108,15 +138,15 @@
                     <div>
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Schedule & Salary</h3>
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <div>
+                            {{-- <div>
                                 <label class="block text-sm font-medium text-gray-700">Working Hours</label>
                                 <div class="grid grid-cols-2 gap-4">
                                     <input type="time" name="work_start" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                     <input type="time" name="work_end" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Salary</label>
+                                <label class="block text-sm font-medium text-gray-700">Salary(GHS) per month</label>
                                 <input type="number" step="0.01" name="salary" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                             </div>
                         </div>
@@ -129,6 +159,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Account Name</label>
                                 <input type="text" name="account_name" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="As per bank records">
+
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Account Number</label>
@@ -159,7 +190,7 @@
                             </div>
                             <div class="sm:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700">Relationship</label>
-                                <input type="text" name="emergency_contact_relationship" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <input type="text" name="relationship" class="mt-1 block w-full h-10 px-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                             </div>
                         </div>
                     </div>
