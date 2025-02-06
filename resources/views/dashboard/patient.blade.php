@@ -1,4 +1,7 @@
-<div class="p-6 text-gray-900">
+@extends('layouts.app')
+
+@section('content')
+<div class="mx-auto">
     <h2 class="text-2xl font-bold mb-4">{{ __('Patient Dashboard') }}</h2>
 
     <!-- Analytics Overview -->
@@ -12,7 +15,7 @@
                 </div>
                 <div>
                     <p class="text-gray-500 text-sm">Upcoming Appointments</p>
-                    <h3 class="text-2xl font-bold">{{ $upcomingAppointments ?? 0 }}</h3>
+                    <h3 class="text-2xl font-bold">{{ $upcomingAppointments->count() }}</h3>
                 </div>
             </div>
         </div>
@@ -45,16 +48,26 @@
             </div>
         </div>
 
+        <!-- Next Appointment Card -->
         <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-purple-100 mr-4">
                     <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div>
                     <p class="text-gray-500 text-sm">Next Appointment</p>
-                    <h3 class="text-sm font-bold">{{ $nextAppointment ?? 'No upcoming' }}</h3>
+                    @if($nextAppointment)
+                        <h3 class="text-sm font-bold">
+                            {{ $nextAppointment->appointment_datetime->format('M d, Y g:i A') }}
+                            <br>
+                            <span class="text-gray-600">with Dr. {{ $nextAppointment->doctor->user->name }}</span>
+                            <span class="text-gray-600">in {{ $nextAppointment->department->name }}</span>
+                        </h3>
+                    @else
+                        <h3 class="text-sm text-gray-600">No upcoming appointments</h3>
+                    @endif
                 </div>
             </div>
         </div>
@@ -101,6 +114,7 @@
                 </a>
             </div>
         </div>
+
         <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
             <h3 class="text-lg font-semibold mb-2">{{ __('Bills') }}</h3>
             <p class="text-sm text-gray-600 mb-4">{{ __('View your Bills') }}</p>
@@ -108,9 +122,69 @@
                 <a href="{{route('patient.bills.index')}}" class="inline-flex items-center px-3 py-2 border border-purple-300 text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200">
                     {{ __('View All') }}
                 </a>
-                {{-- <a href="{{ route('patient.bills.download') }}" class="inline-flex items-center px-3 py-2 border border-purple-300 text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200">
-                    {{ __('Download') }}
-                </a> --}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointments Sections -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Upcoming Appointments -->
+        <div class="bg-white rounded-lg shadow-sm">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold">Upcoming Appointments</h3>
+            </div>
+            <div class="p-4">
+                @if($upcomingAppointments->count() > 0)
+                    <div class="space-y-4">
+                        @foreach($upcomingAppointments as $appointment)
+                            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                                <div>
+                                    <p class="font-semibold">{{ $appointment->appointment_datetime->format('M d, Y') }}</p>
+                                    <p class="text-sm text-gray-600">
+                                        {{ $appointment->start_time->format('g:i A') }} - {{ $appointment->end_time->format('g:i A') }}
+                                    </p>
+                                    <p class="text-sm text-gray-600">Dr. {{ $appointment->doctor->user->name }}</p>
+                                    <p class="text-sm text-gray-600">{{ $appointment->department->name }}</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <span class="px-3 py-1 text-xs rounded-full 
+                                        {{ $appointment->status === 'scheduled' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                        {{ ucfirst($appointment->status) }}
+                                    </span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-gray-600 text-center py-4">No upcoming appointments</p>
+                @endif
+            </div>
+        </div>
+
+        <!-- Recent Appointments -->
+        <div class="bg-white rounded-lg shadow-sm">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold">Recent Appointments</h3>
+            </div>
+            <div class="p-4">
+                @if($recentAppointments->count() > 0)
+                    <div class="space-y-4">
+                        @foreach($recentAppointments as $appointment)
+                            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                                <div>
+                                    <p class="font-semibold">{{ $appointment->appointment_datetime->format('M d, Y') }}</p>
+                                    <p class="text-sm text-gray-600">Dr. {{ $appointment->doctor->user->name }}</p>
+                                    <p class="text-sm text-gray-600">{{ $appointment->department->name }}</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 text-sm">View Details</a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-gray-600 text-center py-4">No recent appointments</p>
+                @endif
             </div>
         </div>
     </div>
@@ -152,3 +226,4 @@
         </div>
     </div>
 </div>
+@endsection

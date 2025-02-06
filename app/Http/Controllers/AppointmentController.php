@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\User;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 use App\Http\Requests\AppointmentRequest;
 use Carbon\Carbon;
@@ -82,8 +83,29 @@ class AppointmentController extends Controller
         $appointment = new Appointment($request->validated());
 
         if (auth()->user()->hasRole('patient')) {
+            // Set patient ID
             $patient = Patient::where('user_id', auth()->id())->first();
             $appointment->patient_id = $patient->id;
+            
+            // Find available doctor in the selected department
+            $availableDoctor = Employee::where('department_id', $request->department_id)
+                ->whereHas('user', function($query) {
+                    $query->whereHas('roles', function($q) {
+                        $q->where('name', 'doctor');
+                    });
+                })
+                ->whereDoesntHave('appointments', function($query) use ($request) {
+                    $query->where('appointment_datetime', $request->appointment_datetime)
+                        ->where('status', 'scheduled');
+                })
+                ->first();
+
+            if (!$availableDoctor) {
+                return back()->with('error', 'No doctors available at the selected time. Please choose another time.');
+            }
+
+            $appointment->doctor_id = $availableDoctor->id;
+
         } elseif (auth()->user()->hasRole('doctor')) {
             $doctorEmployee = Employee::where('user_id', auth()->id())->first();
             $appointment->doctor_id = $doctorEmployee->id;

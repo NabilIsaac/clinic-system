@@ -41,7 +41,7 @@
                     </div>
                     <div class="ml-3 text-left">
                         <span class="block text-sm font-medium text-gray-900">{{ Auth::user()->name }}</span>
-                        @role(['doctor', 'nurse', 'admin', 'super-admin'])
+                        @role(['doctor', 'nurse', 'admin', 'super-admin', 'receptionist'])
                         <span class="text-xs text-gray-500"
                             x-text="currentView === 'work' ? 'Work Account' : 'Employee Profile'"></span>
                         @endrole
@@ -56,7 +56,7 @@
                 <!-- User Modal -->
                 <div x-show="showUserModal" @click.away="showUserModal = false"
                     class="absolute right-0 z-50 w-64 mt-2 bg-white border border-gray-100 rounded-lg shadow-lg">
-                    @role(['doctor', 'nurse', 'admin', 'super-admin'])
+                    @role(['doctor', 'nurse', 'admin', 'super-admin', 'receptionist'])
 
                      <!-- Role Switcher (only show if user has multiple roles) -->
                     {{-- @if(auth()->user()->roles->count() > 1)
@@ -160,7 +160,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
-                                    {{ __('Employee Management') }}
+                                    {{ __('Employee Mgt') }}
                                 </div>
                                 <svg class="w-4 h-4 ml-2" :class="{'rotate-90': employeeOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -439,7 +439,7 @@
                         @if(auth()->user()->roles->count() > 1)
                             <h1>Receptionist</h1>
                         @endif
-                        <a href="{{ route('patients.index') }}"
+                        <a href="{{ route('receptionist.patients.index') }}"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50">
                             <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">

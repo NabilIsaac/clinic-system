@@ -17,7 +17,7 @@
         @include('dashboard.doctor')
     @endrole
 
-    @role('staff')
-        @include('dashboard.staff')
+    @role('receptionist')
+        @include('dashboard.receptionist')
     @endrole
 @endsection

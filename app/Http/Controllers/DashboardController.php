@@ -46,8 +46,24 @@ class DashboardController extends Controller
     {
         $data = $this->getDefaultData();
         $patient = auth()->user()->patient;
-        
-        $data['appointments'] = Appointment::where('patient_id', $patient->id)
+        $now = now();
+
+         // Get upcoming appointments (excluding the next appointment)
+         $upcomingAppointments = Appointment::where('patient_id', $patient->id)
+            ->where('appointment_datetime', '>=', now())
+            ->with(['doctor.user', 'department'])
+            ->orderBy('appointment_datetime', 'desc')
+            ->take(5)
+            ->get();
+            
+        // Get next appointment (first upcoming appointment)
+        $data['nextAppointment'] = $upcomingAppointments->first();
+        $data['upcomingAppointments'] = $upcomingAppointments->slice(1);
+
+
+        // Recent appointments (past appointments)
+        $data['recentAppointments'] = Appointment::where('patient_id', $patient->id)
+            ->where('appointment_datetime', '<=', $now)
             ->with(['doctor.user', 'department'])
             ->orderBy('appointment_datetime', 'desc')
             ->take(5)
@@ -111,6 +127,40 @@ class DashboardController extends Controller
             ->whereDate('appointment_datetime', Carbon::today())
             ->with(['patient.user', 'doctor.user'])
             ->orderBy('appointment_datetime')
+            ->get();
+
+        return $data;
+    }
+
+    protected function receptionistDashboard()
+    {
+        $data = $this->getDefaultData();
+        $now = now();
+        $today = now()->startOfDay();
+
+        // Today's appointments
+        $data['todayAppointments'] = Appointment::whereDate('appointment_datetime', $today)
+            ->count();
+
+        // Pending appointments
+        $data['pendingAppointments'] = Appointment::where('status', 'scheduled')
+            ->where('appointment_datetime', '>=', $now)
+            ->count();
+
+        // Total patients
+        $data['totalPatients'] = Patient::count();
+
+        // Available doctors today
+        $data['availableDoctors'] = Employee::whereHas('user', function($query) {
+            $query->whereHas('roles', function($q) {
+                $q->where('name', 'doctor');
+            });
+        })->count();
+
+        // Today's schedule
+        $data['todaySchedule'] = Appointment::with(['patient.user', 'doctor.user'])
+            ->whereDate('appointment_datetime', $today)
+            ->orderBy('appointment_datetime', 'asc')
             ->get();
 
         return $data;
@@ -232,6 +282,9 @@ class DashboardController extends Controller
                 break;
             case 'nurse':
                 $data = $this->nurseDashboard();
+                break;
+            case 'receptionist':
+                $data = $this->receptionistDashboard();
                 break;
             case 'patient':
                 $data = $this->patientDashboard();

@@ -16,7 +16,7 @@ class AppointmentRequest extends FormRequest
     {
         return [
             'department_id' => ['required', 'exists:departments,id'],
-            'doctor_id' => ['required', 'exists:employees,id'],
+            'doctor_id' => ['nullable', 'exists:employees,id'],
             'patient_id' => [
                 'required_if:role,staff,admin',
                 'exists:patients,id'

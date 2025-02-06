@@ -55,11 +55,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Single dashboard route with dynamic prefix
     Route::get('{prefix}/dashboard', [DashboardController::class, 'index'])
-        ->where('prefix', 'super-admin|admin|patient|doctor|nurse|staff')
+        ->where('prefix', 'super-admin|admin|patient|doctor|nurse|receptionist')
         ->name('dashboard');
 
-    Route::post('/switch-role', [App\Http\Controllers\UserController::class, 'switchRole'])
-    ->name('user.switch-role');
+
+    // Route::post('/switch-role', [App\Http\Controllers\UserController::class, 'switchRole'])
+    // ->name('user.switch-role');
 
     // Admin routes
     Route::middleware(['role:admin|super-admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -108,7 +109,14 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('patient-assessments', HealthAssessmentController::class);
     });
 
-    Route::middleware(['role:nurse|receptionist'])->prefix('nurse')->name('nurse.')->group(function () {
+    Route::middleware(['role:nurse'])->prefix('nurse')->name('nurse.')->group(function () {
+        Route::resource('patients', DoctorPatientController::class);
+        Route::resource('checkups', CheckupController::class);
+        Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
+        Route::resource('patient-assessments', HealthAssessmentController::class);
+    });
+
+    Route::middleware(['role:receptionist'])->prefix('receptionist')->name('receptionist.')->group(function () {
         Route::resource('patients', DoctorPatientController::class);
         Route::resource('checkups', CheckupController::class);
         Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
@@ -124,20 +132,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bills/{bill}', [BillController::class, 'show'])->name('bills.show');
         Route::get('/bills/{bill}/download', [BillController::class, 'download'])->name('bills.download');
     });
-
-
-    // Role-specific dashboard routes
-    Route::get('/doctor/dashboard', [DashboardController::class, 'doctorDashboard'])
-        ->name('doctor.dashboard')
-        ->middleware('auth');
-
-    Route::get('/nurse/dashboard', [DashboardController::class, 'nurseDashboard'])
-        ->name('nurse.dashboard')
-        ->middleware('auth');
-
-    Route::get('/staff/dashboard', [DashboardController::class, 'staffDashboard'])
-        ->name('staff.dashboard')
-        ->middleware('auth');
 
     // Appointment Routes
     Route::resource('appointments', AppointmentController::class);
