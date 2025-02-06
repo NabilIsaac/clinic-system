@@ -8,6 +8,8 @@ use App\Models\Payslip;
 use App\Services\PayslipService;
 use Illuminate\Http\Request;
 use App\Models\Department;
+use Carbon\Carbon;
+use Illuminate\Support\Number;
 
 class PayslipController extends Controller
 {
@@ -55,8 +57,9 @@ class PayslipController extends Controller
 
     public function bulkCreate()
     {
-        \Log::info('Bulk create method called');
-        return view('admin.employee.payslips.bulk-create');
+        $departments = Department::all();
+        $employees = Employee::with('department')->get();
+        return view('admin.employee.payslips.bulk-create', compact('departments', 'employees'));
     }
 
     public function store(Request $request, Employee $employee)
@@ -67,7 +70,6 @@ class PayslipController extends Controller
             'basic_salary' => 'required|numeric|min:0',
             'allowances' => 'nullable|numeric|min:0',
             'deductions' => 'nullable|numeric|min:0',
-            'issue_date' => 'required|date'
         ]);
 
         $netSalary = $validated['basic_salary'] + 
@@ -81,7 +83,7 @@ class PayslipController extends Controller
             'allowances' => $validated['allowances'] ?? 0,
             'deductions' => $validated['deductions'] ?? 0,
             'net_salary' => $netSalary,
-            'issue_date' => $validated['issue_date'],
+            'issue_date' => now(),
             'status' => 'draft'
         ]);
 
@@ -96,19 +98,20 @@ class PayslipController extends Controller
             'employee_ids.*' => 'exists:employees,id',
             'period_start' => 'required|date',
             'period_end' => 'required|date|after:period_start',
-            'issue_date' => 'required|date',
             'allowances' => 'nullable|numeric|min:0',
             'deductions' => 'nullable|numeric|min:0'
         ]);
+
+        $validated['issue_date'] = now();
 
         $payslips = $this->payslipService->generateBulkPayslips(
             $validated['employee_ids'],
             $validated
         );
 
-        foreach ($payslips as $payslip) {
-            $payslip->employee->notify(new PayslipGenerated($payslip));
-        }
+        // foreach ($payslips as $payslip) {
+        //     $payslip->employee->notify(new PayslipGenerated($payslip));
+        // }
 
         return redirect()->route('admin.employee.payslips.index')
             ->with('success', count($payslips) . ' payslips generated successfully');
@@ -119,9 +122,38 @@ class PayslipController extends Controller
         //
     }
 
+    public function getEmployeePayslips()
+    {
+        $employee = auth()->user()->employee;
+        // dd($employee);
+        $payslips = $employee->payslips()->with('employee')->get();
+        $baseSalary = Number::currency($employee->salary, in: 'GHS');
+        return view('admin.employee.documents.payslips', compact('payslips', 'employee', 'baseSalary'));
+    }
+
+    public function showEmployeePayslip(Payslip $payslip)
+    {
+        // Ensure employee can only view their own payslips
+        if ($payslip->employee_id !== auth()->user()->employee->id) {
+            abort(403);
+        }
+
+        return view('admin.employee.documents.payslip-show', compact('payslip'));
+    }
+
     public function downloadPDF(Payslip $payslip)
     {
         $pdf = $this->payslipService->generatePDF($payslip);
-        return $pdf->download("payslip-{$payslip->employee->id}-{$payslip->period_start->format('Y-m')}.pdf");
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="payslip-' . $payslip->employee->id . '-' . $payslip->created_at->format('Y-m') . '.pdf"'
+        ]);
+    }
+
+    public function issue(Payslip $payslip)
+    {
+        $payslip->update(['status' => 'issued']);
+        return redirect()->route('admin.employee.payslips.index')
+            ->with('success', 'Payslip issued successfully');
     }
 }

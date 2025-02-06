@@ -2,37 +2,37 @@
 @section('content')
 <div class="">
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     {{ __('Payslips Management') }}
                 </h2>
                 <div class="flex items-center space-x-2">
                     <!-- Filter Button -->
-                    <a href="{{ route('admin.payslips.create') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <a href="{{ route('admin.payslips.create') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         {{ __('Create Payslip') }}
                     </a>
-                    <a href="{{ route('admin.payslips.bulk-create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <a href="{{ route('admin.payslips.bulk-create') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         {{ __('Bulk Generate') }}
                     </a>
                 </div>
             </div>
            
             <!-- Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-12">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="grid grid-cols-1 gap-6 mt-12 mb-6 md:grid-cols-3">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="text-sm text-gray-600">Total Payslips This Month</div>
                         <div class="text-2xl font-bold">{{ $stats['total_payslips'] }}</div>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="text-sm text-gray-600">Total Amount Paid</div>
                         <div class="text-2xl font-bold">${{ number_format($stats['total_paid'], 2) }}</div>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="text-sm text-gray-600">Pending Approvals</div>
                         <div class="text-2xl font-bold">{{ $stats['pending_approvals'] }}</div>
@@ -41,16 +41,16 @@
             </div>
 
             <!-- Filters -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="mb-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route('admin.payslips.index') }}" method="GET" class="flex justify-between items-center w-full">
+                    <form action="{{ route('admin.payslips.index') }}" method="GET" class="flex items-center justify-between w-full">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Period</label>
-                            <input type="month" name="period" value="{{ request('period') }}" class="mt-1 block w-full rounded-md border-gray-300">
+                            <input type="month" name="period" value="{{ request('period') }}" class="block w-full mt-1 border-gray-300 rounded-md">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Status</label>
-                            <select name="status" class="mt-1 block text-sm w-full rounded-md border-gray-300">
+                            <select name="status" class="block w-full mt-1 text-sm border-gray-300 rounded-md">
                                 <option value="">All Status</option>
                                 <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                                 <option value="issued" {{ request('status') == 'issued' ? 'selected' : '' }}>Issued</option>
@@ -59,7 +59,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Department</label>
-                            <select name="department" class="mt-1 block text-sm w-full rounded-md border-gray-300">
+                            <select name="department" class="block w-full mt-1 text-sm border-gray-300 rounded-md">
                                 <option value="">All Departments</option>
                                 @foreach($departments as $dept)
                                     <option value="{{ $dept->id }}" {{ request('department') == $dept->id ? 'selected' : '' }}>
@@ -69,25 +69,25 @@
                             </select>
                         </div>
                         <div class="flex items-end">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-50">Filter</button>
+                            <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-50">Filter</button>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Payslips Table -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Basic Salary</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Bonuses</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Salary</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Employee</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Period</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Basic Salary</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Total Bonuses</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Net Salary</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -105,16 +105,16 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $payslip->period_start->format('M Y') }}
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                        {{ $payslip->period_start?->format('M Y') }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                         ${{ number_format($payslip->basic_salary, 2) }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                         ${{ number_format($payslip->total_bonuses, 2) }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                         ${{ number_format($payslip->net_salary, 2) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -125,7 +125,7 @@
                                             {{ ucfirst($payslip->status) }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="px-6 py-4 text-sm font-medium whitespace-nowrap">
                                         <div class="flex space-x-3">
                                             <a href="{{ route('admin.payslips.show', $payslip) }}" class="text-indigo-600 hover:text-indigo-900">View</a>
                                             <a href="{{ route('admin.payslips.download', $payslip) }}" class="text-green-600 hover:text-green-900">Download</a>
@@ -140,7 +140,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    <td colspan="7" class="px-6 py-4 text-sm text-center text-gray-500 whitespace-nowrap">
                                         No payslips found
                                     </td>
                                 </tr>
@@ -148,9 +148,7 @@
                         </tbody>
                     </table>
 
-                    <div class="mt-4">
-                        {{ $payslips->links() }}
-                    </div>
+                    <x-pagination :items="$payslips" />
                 </div>
             </div>
         </div>

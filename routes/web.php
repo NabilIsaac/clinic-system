@@ -82,10 +82,13 @@ Route::middleware(['auth'])->group(function () {
 
         // Staff Schedule routes
         Route::resource('staff-schedules', StaffScheduleController::class);
-
+        // Route::get('/payslips/bulk-create', function() {
+        //     return 'Route working!';
+        // });
+        Route::get('payslips/bulk-create', [PayslipController::class, 'bulkCreate'])->name('payslips.bulk-create');
+        Route::get('payslips/issue', [PayslipController::class, 'issue'])->name('payslips.issue');
         Route::resource('payslips', PayslipController::class);
-        Route::get('/payslips/bulk-create', [PayslipController::class, 'bulkCreate'])->name('payslips.bulk-create');
-        Route::post('payslips/bulk-store', [PayslipController::class, 'bulkStore'])->name('payslips.bulk-store');
+        Route::post('/payslips/bulk-store', [PayslipController::class, 'bulkStore'])->name('payslips.bulk-store');
         Route::get('payslips/{payslip}/download', [PayslipController::class, 'downloadPDF'])->name('payslips.download');
         
         // Inventory routes
@@ -147,7 +150,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
         Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
         Route::get('/schedule', [EmployeePortalController::class, 'schedule'])->name('schedule');
-        Route::get('/documents/payslips', [EmployeePortalController::class, 'payslips'])->name('documents.payslips');
+
+
+        Route::get('/documents/payslips', [PayslipController::class, 'getEmployeePayslips'])->name('documents.payslips');
+        Route::get('/payslips/{payslip}', [PayslipController::class, 'showEmployeePayslip'])->name('documents.payslips-show');
+        Route::get('/payslips/{payslip}/download', [PayslipController::class, 'downloadPDF'])->name('documents.payslips-download');
+
+
         Route::post('payslips/{payslip}/issue', [PayslipController::class, 'issue'])->name('payslips.issue');
         Route::get('/documents/contracts', [EmployeePortalController::class, 'contracts'])->name('documents.contracts');
         Route::get('/documents/tax-documents', [EmployeePortalController::class, 'taxDocuments'])->name('documents.tax-documents');

@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('payslips', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->string('payslip_number');
             $table->date('period_start');
             $table->date('period_end');
             $table->decimal('basic_salary', 10, 2);
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->decimal('allowances', 10, 2)->default(0);
             $table->decimal('deductions', 10, 2)->default(0);
             $table->decimal('net_salary', 10, 2);
-            $table->date('issue_date');
+            $table->date('issued_date');
             $table->enum('status', ['draft', 'issued', 'paid'])->default('draft');
             $table->timestamps();
             $table->softDeletes();

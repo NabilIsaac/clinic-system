@@ -25,7 +25,7 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">Generate Payslip for {{ $employee->name }}</h2>
+                    <h2 class="text-2xl font-bold">Generate Payslips</h2>
                     <a href="{{ route('admin.payslips.index') }}" 
                         class="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200">
                         Cancel
@@ -52,7 +52,7 @@
                     </div>
                 @endif
 
-                <form id="payslipForm" action="{{ route('admin.payslips.bulk-store', $employee) }}" method="POST" class="space-y-6">
+                <form id="payslipForm" action="{{ route('admin.payslips.bulk-store') }}" method="POST" class="space-y-6">
                     @csrf
                     
                     <!-- Period Section -->
@@ -77,9 +77,35 @@
 
                     <!-- Salary Information -->
                     <div class="bg-gray-50 p-4 rounded-lg">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Base Salary Information</h3>
-                        <p class="text-sm text-gray-600 mb-2">Monthly Base Salary: ${{ number_format($employee->base_salary, 2) }}</p>
-                        <p class="text-sm text-gray-600">Daily Rate: ${{ number_format($employee->base_salary / 22, 2) }}</p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Selected Employees</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <input type="checkbox" id="select-all" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Salary</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Daily Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach($employees as $emp)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="checkbox" name="employee_ids[]" value="{{ $emp->id }}" class="employee-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $emp->user->name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $emp->department->name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($emp->salary, 2) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($emp->salary / 22, 2) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- Work Details -->
@@ -171,108 +197,165 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('payslipForm');
-        const baseSalary = {{ $employee->base_salary }};
-        const dailyRate = baseSalary / 22;
-        
-        // Input elements
-        const inputs = {
-            daysPresent: form.querySelector('[name="days_present"]'),
-            totalDays: form.querySelector('[name="total_working_days"]'),
-            overtimeHours: form.querySelector('[name="overtime_hours"]'),
-            overtimeRate: form.querySelector('[name="overtime_rate"]'),
-            allowances: form.querySelector('[name="allowances"]'),
-            deductions: form.querySelector('[name="deductions"]')
-        };
+    const selectAllCheckbox = document.getElementById('select-all');
+    const employeeCheckboxes = document.querySelectorAll('.employee-checkbox');
+    const form = document.getElementById('payslipForm');
 
-        // Preview elements
-        const preview = {
-            basePay: document.getElementById('previewBasePay'),
-            overtimePay: document.getElementById('previewOvertimePay'),
-            allowances: document.getElementById('previewAllowances'),
-            deductions: document.getElementById('previewDeductions'),
-            netPay: document.getElementById('previewNetPay')
-        };
-
-        // Modal elements
-        const modal = document.getElementById('confirmationModal');
-        const confirmBtn = document.getElementById('confirmGeneration');
-        const cancelBtn = document.getElementById('cancelConfirmation');
-        const showModalBtn = document.getElementById('showConfirmation');
-        const modalSummary = document.getElementById('modalSummary');
-
-        function calculatePayroll() {
-            const daysPresent = parseFloat(inputs.daysPresent.value) || 0;
-            const totalDays = parseFloat(inputs.totalDays.value) || 22;
-            const overtimeHours = parseFloat(inputs.overtimeHours.value) || 0;
-            const overtimeRate = parseFloat(inputs.overtimeRate.value) || 1.5;
-            const allowances = parseFloat(inputs.allowances.value) || 0;
-            const deductions = parseFloat(inputs.deductions.value) || 0;
-
-            // Calculations
-            const basePayAmount = (daysPresent / totalDays) * baseSalary;
-            const overtimePayAmount = (dailyRate / 8) * overtimeHours * overtimeRate;
-            const netPayAmount = basePayAmount + overtimePayAmount + allowances - deductions;
-
-            // Update preview
-            preview.basePay.textContent = `$${basePayAmount.toFixed(2)}`;
-            preview.overtimePay.textContent = `$${overtimePayAmount.toFixed(2)}`;
-            preview.allowances.textContent = `$${allowances.toFixed(2)}`;
-            preview.deductions.textContent = `$${deductions.toFixed(2)}`;
-            preview.netPay.textContent = `$${netPayAmount.toFixed(2)}`;
-
-            return {
-                basePayAmount,
-                overtimePayAmount,
-                allowances,
-                deductions,
-                netPayAmount
-            };
-        }
-
-        // Add input event listeners
-        Object.values(inputs).forEach(input => {
-            input.addEventListener('input', calculatePayroll);
+    // Checkbox handling
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            employeeCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            calculateTotalPayroll(); // Recalculate when selection changes
         });
+    }
 
-        // Modal handling
-        showModalBtn.addEventListener('click', function() {
-            const calculations = calculatePayroll();
-            modalSummary.innerHTML = `
-                <div class="text-left">
-                    <p class="mb-2">Period: ${form.period_start.value} to ${form.period_end.value}</p>
-                    <p class="mb-2">Base Pay: $${calculations.basePayAmount.toFixed(2)}</p>
-                    <p class="mb-2">Overtime Pay: $${calculations.overtimePayAmount.toFixed(2)}</p>
-                    <p class="mb-2">Allowances: $${calculations.allowances.toFixed(2)}</p>
-                    <p class="mb-2">Deductions: $${calculations.deductions.toFixed(2)}</p>
-                    <p class="font-bold">Net Pay: $${calculations.netPayAmount.toFixed(2)}</p>
-                </div>
-            `;
-            modal.classList.remove('hidden');
-        });
-
-        cancelBtn.addEventListener('click', function() {
-            modal.classList.add('hidden');
-        });
-
-        confirmBtn.addEventListener('click', function() {
-            form.submit();
-        });
-
-        // Initial calculation
-        calculatePayroll();
-
-        // Form validation
-        form.addEventListener('submit', function(e) {
-            const startDate = new Date(form.period_start.value);
-            const endDate = new Date(form.period_end.value);
+    employeeCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const totalCheckboxes = employeeCheckboxes.length;
+            const checkedCheckboxes = document.querySelectorAll('.employee-checkbox:checked').length;
             
-            if (endDate < startDate) {
-                e.preventDefault();
-                alert('Period end date cannot be earlier than start date');
-            }
+            selectAllCheckbox.checked = totalCheckboxes === checkedCheckboxes;
+            selectAllCheckbox.indeterminate = checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes;
+            calculateTotalPayroll(); // Recalculate when selection changes
         });
     });
+
+    // Salary data
+    const baseSalaries = {
+        @foreach($employees as $emp)
+            {{ $emp->id }}: {{ $emp->salary }},
+        @endforeach
+    };
+    const dailyRates = {
+        @foreach($employees as $emp)
+            {{ $emp->id }}: {{ $emp->salary / 22 }},
+        @endforeach
+    };
+
+    // Input elements
+    const inputs = {
+        daysPresent: form.querySelector('[name="days_present"]'),
+        totalDays: form.querySelector('[name="total_working_days"]'),
+        overtimeHours: form.querySelector('[name="overtime_hours"]'),
+        overtimeRate: form.querySelector('[name="overtime_rate"]'),
+        allowances: form.querySelector('[name="allowances"]'),
+        deductions: form.querySelector('[name="deductions"]')
+    };
+
+    // Preview elements
+    const preview = {
+        basePay: document.getElementById('previewBasePay'),
+        overtimePay: document.getElementById('previewOvertimePay'),
+        allowances: document.getElementById('previewAllowances'),
+        deductions: document.getElementById('previewDeductions'),
+        netPay: document.getElementById('previewNetPay')
+    };
+
+    function calculateTotalPayroll() {
+        const selectedEmployees = Array.from(document.querySelectorAll('.employee-checkbox:checked'))
+            .map(checkbox => checkbox.value);
+
+        const daysPresent = parseFloat(inputs.daysPresent.value) || 0;
+        const totalDays = parseFloat(inputs.totalDays.value) || 22;
+        const overtimeHours = parseFloat(inputs.overtimeHours.value) || 0;
+        const overtimeRate = parseFloat(inputs.overtimeRate.value) || 1.5;
+        const allowances = parseFloat(inputs.allowances.value) || 0;
+        const deductions = parseFloat(inputs.deductions.value) || 0;
+
+        let totalBasePay = 0;
+        let totalOvertimePay = 0;
+        let totalAllowances = 0;
+        let totalDeductions = 0;
+
+        selectedEmployees.forEach(empId => {
+            const baseSalary = baseSalaries[empId];
+            const dailyRate = dailyRates[empId];
+
+            totalBasePay += (daysPresent / totalDays) * baseSalary;
+            totalOvertimePay += (dailyRate / 8) * overtimeHours * overtimeRate;
+            totalAllowances += allowances;
+            totalDeductions += deductions;
+        });
+
+        const totalNetPay = totalBasePay + totalOvertimePay + totalAllowances - totalDeductions;
+
+        // Update preview
+        preview.basePay.textContent = `$${totalBasePay.toFixed(2)}`;
+        preview.overtimePay.textContent = `$${totalOvertimePay.toFixed(2)}`;
+        preview.allowances.textContent = `$${totalAllowances.toFixed(2)}`;
+        preview.deductions.textContent = `$${totalDeductions.toFixed(2)}`;
+        preview.netPay.textContent = `$${totalNetPay.toFixed(2)}`;
+
+        return {
+            totalBasePay,
+            totalOvertimePay,
+            totalAllowances,
+            totalDeductions,
+            totalNetPay,
+            selectedEmployees
+        };
+    }
+
+    // Add input event listeners
+    Object.values(inputs).forEach(input => {
+        input.addEventListener('input', calculateTotalPayroll);
+    });
+
+    // Modal handling
+    const modal = document.getElementById('confirmationModal');
+    const confirmBtn = document.getElementById('confirmGeneration');
+    const cancelBtn = document.getElementById('cancelConfirmation');
+    const showModalBtn = document.getElementById('showConfirmation');
+    const modalSummary = document.getElementById('modalSummary');
+
+    showModalBtn.addEventListener('click', function() {
+        const calculations = calculateTotalPayroll();
+        if (calculations.selectedEmployees.length === 0) {
+            alert('Please select at least one employee');
+            return;
+        }
+        
+        modalSummary.innerHTML = `
+            <div class="text-left">
+                <p class="mb-2">Selected Employees: ${calculations.selectedEmployees.length}</p>
+                <p class="mb-2">Period: ${form.period_start.value} to ${form.period_end.value}</p>
+                <p class="mb-2">Total Base Pay: $${calculations.totalBasePay.toFixed(2)}</p>
+                <p class="mb-2">Total Overtime Pay: $${calculations.totalOvertimePay.toFixed(2)}</p>
+                <p class="mb-2">Total Allowances: $${calculations.totalAllowances.toFixed(2)}</p>
+                <p class="mb-2">Total Deductions: $${calculations.totalDeductions.toFixed(2)}</p>
+                <p class="font-bold">Total Net Pay: $${calculations.totalNetPay.toFixed(2)}</p>
+            </div>
+        `;
+        modal.classList.remove('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    confirmBtn.addEventListener('click', () => form.submit());
+
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        const selectedEmployees = document.querySelectorAll('.employee-checkbox:checked');
+        if (selectedEmployees.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one employee');
+            return;
+        }
+
+        const startDate = new Date(form.period_start.value);
+        const endDate = new Date(form.period_end.value);
+        
+        if (endDate < startDate) {
+            e.preventDefault();
+            alert('Period end date cannot be earlier than start date');
+        }
+    });
+
+    // Initial calculation
+    calculateTotalPayroll();
+});
 </script>
 @endpush
 @endsection

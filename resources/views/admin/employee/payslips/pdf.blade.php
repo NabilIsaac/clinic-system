@@ -11,7 +11,7 @@
         <h1>Payslip</h1>
         <div class="employee-info">
             <p>Employee: {{ $employee->name }}</p>
-            <p>Period: {{ $payslip->period_start->format('d/m/Y') }} - {{ $payslip->period_end->format('d/m/Y') }}</p>
+            <p>Period: {{ $payslip->period_start?->format('d/m/Y') }} - {{ $payslip->period_end?->format('d/m/Y') }}</p>
         </div>
         
         <div class="salary-details">
