@@ -125,6 +125,9 @@
                                             End Date
                                         </th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Reason
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Duration
                                         </th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -133,63 +136,43 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
+                                    @forelse ($leaveRequests as $request)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Annual Leave</span>
+                                            <span class="text-sm text-gray-900">{{ $request->type }}</span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Jan 15, 2025</span>
+                                            <span class="text-sm text-gray-900">{{ $request->start_date ? date('M d, Y', strtotime($request->start_date)) : "No date" }}</span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Jan 20, 2025</span>
+                                            <span class="text-sm text-gray-900">{{ $request->end_date ? date('M d, Y', strtotime($request->end_date)) : "No date" }}</span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">5 days</span>
+                                            <span class="text-sm text-gray-900">{{ $request->reason }}</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-900">
+                                                @php
+                                                    $start = \Carbon\Carbon::parse($request->start_date);
+                                                    $end = \Carbon\Carbon::parse($request->end_date);
+                                                    $duration = $start->diffInDays($end) + 1; // Add 1 to include both start and end dates
+                                                @endphp
+                                                {{ $duration }} {{ Str::plural('day', $duration) }}
+                                            </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Approved
+                                                {{ $request->status }}
                                             </span>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Sick Leave</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Dec 10, 2024</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Dec 12, 2024</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">2 days</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Approved
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Personal Leave</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Feb 1, 2025</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">Feb 2, 2025</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm text-gray-900">2 days</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                Pending
-                                            </span>
-                                        </td>
-                                    </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                                No leave requests found.
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
