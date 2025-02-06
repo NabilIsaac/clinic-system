@@ -149,7 +149,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payroll', [EmployeePortalController::class, 'payroll'])->name('payroll');
         Route::get('/leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
         Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
-        Route::get('/schedule', [EmployeePortalController::class, 'schedule'])->name('schedule');
+        Route::get('/schedule', [StaffScheduleController::class, 'employeeSchedule'])->name('schedule');
 
 
         Route::get('/documents/payslips', [PayslipController::class, 'getEmployeePayslips'])->name('documents.payslips');

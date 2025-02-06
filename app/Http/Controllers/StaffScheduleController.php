@@ -20,7 +20,7 @@ class StaffScheduleController extends Controller
         })->get();
 
         $query = StaffSchedule::with('user.roles');
-
+ 
         if ($viewType === 'list') {
             // For list view, get all schedules within date range
             $schedules = $query
@@ -146,5 +146,13 @@ class StaffScheduleController extends Controller
 
         return redirect()->route('admin.staff-schedules.index')
             ->with('success', 'Schedule deleted successfully.');
+    }
+
+    public function employeeSchedule()
+    {
+        $staffSchedules = StaffSchedule::where('user_id', auth()->user()->id)->get();
+        $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        return view('admin.employee.schedule', compact('staffSchedules', 'daysOfWeek'));
     }
 }
