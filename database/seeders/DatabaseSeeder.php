@@ -36,6 +36,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductsTableSeeder::class);
         $this->call(MediaTableSeeder::class);
         // $this->call(CategoriesTableSeeder::class);
-        $this->call(BillItemsTableSeeder::class);
+        // $this->call(BillItemsTableSeeder::class);
     }
 }

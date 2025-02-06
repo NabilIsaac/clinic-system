@@ -27,6 +27,7 @@ use App\Http\Controllers\Doctor\RequestFormController;
 use App\Http\Controllers\Doctor\PatientController as DoctorPatientController;
 use App\Http\Controllers\Patient\HealthAssessmentController;
 use App\Http\Controllers\Admin\PayslipController;
+use App\Http\Controllers\PayrollController;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,7 +147,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Employee Routes
     Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
-        Route::get('/payroll', [EmployeePortalController::class, 'payroll'])->name('payroll');
+
+        // Route::get('/payroll', [EmployeePortalController::class, 'payroll'])->name('payroll');
+
+        Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll');
+        Route::get('/payroll/payslip/{payslip}', [PayrollController::class, 'showPayslip'])->name('employee.payslips.show');
+        Route::get('/payroll/payslip/{payslip}/download', [PayrollController::class, 'downloadPayslip'])->name('employee.payslips.download');
+        Route::get('/payroll/current-month', [PayrollController::class, 'getCurrentMonthSummary'])->name('employee.payroll.current-month');
+
         Route::get('/leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
         Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
         Route::get('/schedule', [StaffScheduleController::class, 'employeeSchedule'])->name('schedule');
