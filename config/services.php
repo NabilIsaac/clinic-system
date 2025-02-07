@@ -38,4 +38,7 @@ return [
         'public_key' => 'pk_test_5514279b0ae151f6fa9af86a83a97cfbea59ce7b',
         'secret_key' => 'sk_test_93347b295f618f64c2f95e06a10ca08abdf5921d',
     ],
+    'arkesel' => [
+    'api_key' => env('ARKESEL_API_KEY'),
+],
 ];

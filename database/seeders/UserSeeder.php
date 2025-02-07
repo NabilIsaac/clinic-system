@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@medicareplus.com',
             'password' => Hash::make('password'),
-            'phone_number' => '0551111111',
+            'phone_number' => '0551562947',
             'address' => 'Admin Address',
             'gender' => 'male'
         ]);
@@ -166,7 +166,7 @@ class UserSeeder extends Seeder
             'name' => 'Isaac Nabil',
             'email' => 'nabilkhafali@gmail.com',
             'password' => Hash::make('password'),
-            'phone_number' => '0557777777',
+            'phone_number' => '0506535170',
             'address' => 'Patient Address',
         ]);
         $patient->assignRole('patient');

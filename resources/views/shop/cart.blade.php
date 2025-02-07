@@ -3,9 +3,19 @@
 @section('content')
 <div class="py-8 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center space-x-4 mb-4">
+            <button type="button" onclick="history.back()" class="text-gray-400 hover:text-gray-500">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </button>
+            <div>
+                <h1 class="text-xl font-semibold text-gray-900">My Cart</h1>
+            </div>
+        </div>
         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
             <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-6">Shopping Cart</h2>
+                {{-- <h2 class="text-xl font-semibold text-gray-900 mb-6">Shopping Cart</h2> --}}
                 
                 @if(count($cart) > 0)
                     <div class="divide-y divide-gray-200">

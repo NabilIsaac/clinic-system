@@ -1,7 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white shadow rounded-lg" x-data="{ showModal: false }">
+<div class="bg-white shadow rounded-lg" x-data="{ 
+    showModal: false,
+    leaveType: '',
+    startDate: '',
+    endDate: '',
+    calculateDays() {
+        if (this.startDate && this.endDate) {
+            const start = new Date(this.startDate);
+            const end = new Date(this.endDate);
+            const diffTime = Math.abs(end - start);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        }
+        return 0;
+    }
+}">
     <div class="p-6">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-semibold text-gray-900">{{ __('Leave Requests') }}</h2>
@@ -12,26 +26,17 @@
 
         <!-- Leave Balance -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-blue-900 mb-1">Annual Leave</h3>
-                <p class="text-2xl font-bold text-blue-700">15 days</p>
-                <p class="text-sm text-blue-600 mt-1">10 remaining</p>
+            @foreach($leaveBalances as $type => $balance)
+            <div class="bg-{{ $balance['color'] }}-50 p-4 rounded-lg">
+                <h3 class="text-sm font-medium text-{{ $balance['color'] }}-900 mb-1">{{ $balance['name'] }}</h3>
+                <p class="text-2xl font-bold text-{{ $balance['color'] }}-700">
+                    {{ $balance['total'] }} days
+                </p>
+                <p class="text-sm text-{{ $balance['color'] }}-600 mt-1">
+                    {{ $balance['remaining'] }} remaining
+                </p>
             </div>
-            <div class="bg-green-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-green-900 mb-1">Sick Leave</h3>
-                <p class="text-2xl font-bold text-green-700">10 days</p>
-                <p class="text-sm text-green-600 mt-1">8 remaining</p>
-            </div>
-            <div class="bg-purple-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-purple-900 mb-1">Personal Leave</h3>
-                <p class="text-2xl font-bold text-purple-700">5 days</p>
-                <p class="text-sm text-purple-600 mt-1">3 remaining</p>
-            </div>
-            <div class="bg-orange-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-orange-900 mb-1">Unpaid Leave</h3>
-                <p class="text-2xl font-bold text-orange-700">Unlimited</p>
-                <p class="text-sm text-orange-600 mt-1">Subject to approval</p>
-            </div>
+            @endforeach
         </div>
 
         <!-- Leave Request Modal -->
@@ -48,8 +53,7 @@
              aria-modal="true"
              style="background-color: rgba(0, 0, 0, 0.5);">
             <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                </div>
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true"></div>
 
                 <div x-show="showModal"
                      x-transition:enter="ease-out duration-300"
@@ -60,43 +64,57 @@
                      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                      class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                      @click.away="showModal = false">
-                    <form action="{{ route('employee.leave-requests.store') }}" method="POST">
+                    <form action="{{ route('employee.leave-requests.store') }}" method="POST" 
+                          x-on:submit="$event.preventDefault(); validateForm($event)">
                         @csrf
                         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">Request Leave</h3>
                             
                             <div class="mb-4">
-                                <label for="type" class="block text-sm font-medium text-gray-700">Leave Type</label>
-                                <select id="type" name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="annual">Annual Leave</option>
-                                    <option value="sick">Sick Leave</option>
-                                    <option value="personal">Personal Leave</option>
-                                    <option value="unpaid">Unpaid Leave</option>
+                                <label for="leave_type" class="block text-sm font-medium text-gray-700">Leave Type</label>
+                                <select id="leave_type" name="leave_type" x-model="leaveType" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                    <option value="">Select Leave Type</option>
+                                    @foreach($leaveTypes as $type => $details)
+                                        <option value="{{ $type }}">{{ $details['name'] }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date</label>
-                                    <input type="date" id="start_date" name="start_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <input type="date" id="start_date" name="start_date" x-model="startDate" required
+                                           min="{{ date('Y-m-d') }}"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                 </div>
                                 <div>
                                     <label for="end_date" class="block text-sm font-medium text-gray-700">End Date</label>
-                                    <input type="date" id="end_date" name="end_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <input type="date" id="end_date" name="end_date" x-model="endDate" required
+                                           min="{{ date('Y-m-d') }}"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                 </div>
+                            </div>
+
+                            <div x-show="startDate && endDate" class="text-sm text-gray-600 mb-4">
+                                Requested days: <span x-text="calculateDays()"></span>
                             </div>
 
                             <div>
                                 <label for="reason" class="block text-sm font-medium text-gray-700">Reason</label>
-                                <textarea id="reason" name="reason" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                                <textarea id="reason" name="reason" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                        rows="3"></textarea>
                             </div>
                         </div>
 
                         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="submit" 
+                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Submit Request
                             </button>
-                            <button type="button" @click="showModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="button" @click="showModal = false"
+                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                 Cancel
                             </button>
                         </div>
@@ -115,24 +133,12 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Type
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Start Date
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            End Date
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Reason
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Duration
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
-                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -155,23 +161,27 @@
                                                 @php
                                                     $start = \Carbon\Carbon::parse($request->start_date);
                                                     $end = \Carbon\Carbon::parse($request->end_date);
-                                                    $duration = $start->diffInDays($end) + 1; // Add 1 to include both start and end dates
+                                                    $duration = $start->diffInDays($end) + 1;
                                                 @endphp
                                                 {{ $duration }} {{ Str::plural('day', $duration) }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                {{ $request->status }}
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                @if($request->status === 'approved') bg-green-100 text-green-800
+                                                @elseif($request->status === 'rejected') bg-red-100 text-red-800
+                                                @else bg-yellow-100 text-yellow-800
+                                                @endif">
+                                                {{ ucfirst($request->status) }}
                                             </span>
                                         </td>
                                     </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                                                No leave requests found.
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                            No leave requests found
+                                        </td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -182,4 +192,34 @@
         </div>
     </div>
 </div>
+
+<script>
+function validateForm(event) {
+    const form = event.target;
+    const leaveType = form.leave_type.value;
+    const startDate = new Date(form.start_date.value);
+    const endDate = new Date(form.end_date.value);
+    
+    if (startDate > endDate) {
+        alert('End date cannot be before start date');
+        return false;
+    }
+
+    const diffTime = Math.abs(endDate - startDate);
+    const requestedDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    const remainingDays = {
+        annual: {{ $leaveBalances['annual']['remaining'] }},
+        sick: {{ $leaveBalances['sick']['remaining'] }},
+        personal: {{ $leaveBalances['personal']['remaining'] }}
+    };
+
+    if (leaveType !== 'unpaid' && requestedDays > remainingDays[leaveType]) {
+        alert(`You don't have enough ${leaveType} leave days remaining. You have ${remainingDays[leaveType]} days left.`);
+        return false;
+    }
+
+    form.submit();
+}
+</script>
 @endsection

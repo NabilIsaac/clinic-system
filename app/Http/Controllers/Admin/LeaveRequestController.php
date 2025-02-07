@@ -8,6 +8,47 @@ use Illuminate\Http\Request;
 
 class LeaveRequestController extends Controller
 {
+
+    public function index()
+    {
+        $user = auth()->user();
+        $leaveRequest = new LeaveRequest();
+    
+        $leaveBalances = [
+            'annual' => [
+                'name' => 'Annual Leave',
+                'total' => LeaveRequest::LEAVE_TYPES['annual']['days'],
+                'remaining' => $leaveRequest->getRemainingLeaveDays($user->id, 'annual'),
+                'color' => 'blue'
+            ],
+            'sick' => [
+                'name' => 'Sick Leave',
+                'total' => LeaveRequest::LEAVE_TYPES['sick']['days'],
+                'remaining' => $leaveRequest->getRemainingLeaveDays($user->id, 'sick'),
+                'color' => 'green'
+            ],
+            'personal' => [
+                'name' => 'Personal Leave',
+                'total' => LeaveRequest::LEAVE_TYPES['personal']['days'],
+                'remaining' => $leaveRequest->getRemainingLeaveDays($user->id, 'personal'),
+                'color' => 'purple'
+            ],
+            'unpaid' => [
+                'name' => 'Unpaid Leave',
+                'total' => 'Unlimited',
+                'remaining' => 'Subject to approval',
+                'color' => 'orange'
+            ]
+        ];
+    
+        $leaveTypes = LeaveRequest::LEAVE_TYPES;
+        $leaveRequests = LeaveRequest::where('user_id', $user->id)
+            ->latest()
+            ->paginate(10);
+    
+        return view('admin.employee.leave-requests', compact('leaveBalances', 'leaveTypes', 'leaveRequests'));
+    }
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -30,12 +71,65 @@ class LeaveRequestController extends Controller
             ->with('success', 'Leave request submitted successfully.');
     }
 
-    public function index()
+    public function getAll()
     {
-        $leaveRequests = LeaveRequest::where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $leaves = LeaveRequest::with('user')
+            ->latest()
+            ->paginate(10);
 
-        return view('admin.employee.leave-requests', compact('leaveRequests'));
+        return view('admin.leaves.index', compact('leaves'));
     }
+
+    public function showAll(LeaveRequest $leave)
+    {
+        return view('admin.leaves.show', compact('leave'));
+    }
+
+    public function approve(LeaveRequest $leave, Request $request)
+    {
+        try {
+            $leave->update([
+                'status' => 'approved',
+                'admin_comment' => $request->admin_comment
+            ]);
+
+            // You can add notification logic here
+            // Notify::send($leave->user, new LeaveRequestStatusChanged($leave));
+
+            return back()->with('success', 'Leave request approved successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error approving leave request: ' . $e->getMessage());
+            return back()->with('error', 'Failed to approve leave request.');
+        }
+    }
+
+    public function reject(LeaveRequest $leave, Request $request)
+    {
+        try {
+            $leave->update([
+                'status' => 'rejected',
+                'admin_comment' => $request->admin_comment
+            ]);
+
+            // You can add notification logic here
+            // Notify::send($leave->user, new LeaveRequestStatusChanged($leave));
+
+            return back()->with('success', 'Leave request rejected successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error rejecting leave request: ' . $e->getMessage());
+            return back()->with('error', 'Failed to reject leave request.');
+        }
+    }
+
+    public function destroy(LeaveRequest $leave)
+    {
+        try {
+            $leave->delete();
+            return back()->with('success', 'Leave request deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error deleting leave request: ' . $e->getMessage());
+            return back()->with('error', 'Failed to delete leave request.');
+        }
+    }
+
 }

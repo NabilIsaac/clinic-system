@@ -31,7 +31,8 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\OrderController;
 use App\Http\Controllers\Shop\ShopController;
-
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\BroadcastController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -61,16 +62,13 @@ Route::middleware(['auth'])->group(function () {
         ->where('prefix', 'super-admin|admin|patient|doctor|nurse|receptionist')
         ->name('dashboard');
 
-
     // Route::post('/switch-role', [App\Http\Controllers\UserController::class, 'switchRole'])
     // ->name('user.switch-role');
 
     // Admin routes
     Route::middleware(['role:admin|super-admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
         Route::resource('users', UserController::class);
-
         Route::resource('billing', AdminBillController::class);
         Route::get('/billing/patient-items/{patient}', [AdminBillController::class, 'getPatientItems'])
         ->name('admin.billing.patient-items');
@@ -100,6 +98,14 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('inventory', InventoryController::class);
         Route::post('inventory/{id}/adjust-stock', [InventoryController::class, 'adjustStock'])->name('inventory.adjust-stock');
         Route::get('inventory/export', [InventoryController::class, 'export'])->name('inventory.export');
+
+        Route::get('/broadcasts', [BroadcastController::class, 'index'])->name('broadcasts.index');
+        Route::post('/broadcasts/send', [BroadcastController::class, 'send'])->name('broadcasts.send');
+
+        Route::get('/leaves', [LeaveRequestController::class, 'getAll'])->name('leaves.index');
+        Route::get('/leave', [LeaveRequestController::class, 'showAll'])->name('leaves.show');
+        Route::patch('leaves/{leave}/approve', [LeaveRequestController::class, 'approve'])->name('leaves.approve');
+        Route::patch('leaves/{leave}/reject', [LeaveRequestController::class, 'reject'])->name('leaves.reject');
     });
 
     Route::middleware(['role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
@@ -124,6 +130,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('checkups', CheckupController::class);
         Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
         Route::resource('patient-assessments', HealthAssessmentController::class);
+
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+        Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+
     });
 
     
@@ -143,10 +154,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/appointment/calendar', [AppointmentController::class, 'calendar'])->name('appointments.calendar');
 
     // Employee Routes
-    Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
-
+    Route::prefix('employee')->name('employee.')->group(function () {
         // Route::get('/payroll', [EmployeePortalController::class, 'payroll'])->name('payroll');
-
         Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll');
         Route::get('/payroll/payslip/{payslip}', [PayrollController::class, 'showPayslip'])->name('employee.payslips.show');
         Route::get('/payroll/payslip/{payslip}/download', [PayrollController::class, 'downloadPayslip'])->name('employee.payslips.download');

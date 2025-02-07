@@ -1,6 +1,7 @@
-<div x-data="{ open: false }" class="fixed bottom-6 right-6 z-50">
+{{-- <div x-data="{ open: false }" class="fixed bottom-6 right-6 z-50"> --}}
+
     <!-- Floating Button -->
-    <button 
+    {{-- <button 
         @click="open = true"
         class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center space-x-2"
     >
@@ -8,10 +9,10 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
         <span>New Checkup</span>
-    </button>
+    </button> --}}
 
     <!-- Modal -->
-    <div
+    {{-- <div
         x-show="open"
         x-cloak
         class="fixed inset-0 z-50 overflow-y-auto"
@@ -107,10 +108,10 @@
                 </form>
             </div>
         </div>
-    </div>
-</div>
+    </div> --}}
+{{-- </div> --}}
 
-@push('scripts')
+{{-- @push('scripts')
 <script>
     function addSymptom() {
         const container = document.getElementById('symptoms-container');
@@ -158,4 +159,14 @@
         }
     });
 </script>
-@endpush
+@endpush --}}
+<div class="fixed bottom-6 right-6 z-50">
+    <a
+        href="{{ route('doctor.checkups.create') }}"
+        class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center space-x-2"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+    </a>
+</div>
