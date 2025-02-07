@@ -17,6 +17,7 @@ class PatientController extends Controller
 {
     public function index(Request $request)
     {
+        // dd(Patient::get());
         $query = Patient::query()
             ->whereHas('appointments', function ($query) {
                 $query->where('doctor_id', Auth::id());
@@ -59,6 +60,7 @@ class PatientController extends Controller
 
     public function store(StorePatientRequest $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
 
         try {
@@ -92,7 +94,7 @@ class PatientController extends Controller
                 'insurance_company' => $request->insurance_company,
                 'insurance_number' => $request->insurance_number,
                 'policy_number' => $request->policy_number,
-                'member_number' => $request->member_number,
+                // 'member_number' => $request->member_number,
                 'issued_date' => $request->issued_date,
                 'expiry_date' => $request->expiry_date,
             ]);
@@ -100,9 +102,9 @@ class PatientController extends Controller
             DB::commit();
 
             // Send password reset link to patient's email
-            $status = Password::sendResetLink(['email' => $user->email]);
+            // $status = Password::sendResetLink(['email' => $user->email]);
 
-            return redirect()->route('nurse.patients.index')
+            return redirect()->route('receptionist.patients.index')
                 ->with('success', 'Patient created successfully. A password reset link has been sent to their email.');
 
         } catch (\Exception $e) {

@@ -16,7 +16,7 @@
         </div>
         <div class="bg-white shadow overflow-hidden sm:rounded-lg relative">
 
-            <form method="POST" action="{{ route('nurse.patients.store') }}">
+            <form method="POST" action="{{ route('receptionist.patients.store') }}">
                 @csrf
                 
                 <!-- Personal Information -->
@@ -25,48 +25,69 @@
                     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" name="name" id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            <input type="text" name="name" id="name" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" name="email" id="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            <input type="email" name="email" id="email" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            @error('email')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
                             <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                            <input type="tel" name="phone_number" id="phone_number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            <input type="tel" name="phone_number" id="phone_number" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            @error('phone_number')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
                             <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                            <input type="date" name="date_of_birth" id="date_of_birth" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            <input type="date" name="date_of_birth" id="date_of_birth" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                            @error('date_of_birth')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
                             <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
-                            <select name="gender" id="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <select name="gender" id="gender" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                                 <option value="">Select Gender</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                                 <option value="other">Other</option>
                             </select>
+                            @error('gender')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
                             <label for="marital_status" class="block text-sm font-medium text-gray-700">Marital Status</label>
-                            <select name="marital_status" id="marital_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <select name="marital_status" id="marital_status" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                                 <option value="">Select Status</option>
                                 <option value="single">Single</option>
                                 <option value="married">Married</option>
                                 <option value="divorced">Divorced</option>
                                 <option value="widowed">Widowed</option>
                             </select>
+                            @error('marital_status')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="sm:col-span-3">
                             <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-                            <textarea name="address" id="address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            <textarea name="address" id="address" rows="3" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            @error('address')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -77,27 +98,39 @@
                     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div>
                             <label for="blood_type" class="block text-sm font-medium text-gray-700">Blood Type</label>
-                            <select name="blood_type" id="blood_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <select name="blood_type" id="blood_type" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                                 <option value="">Select Blood Type</option>
                                 @foreach(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $type)
                                     <option value="{{ $type }}">{{ $type }}</option>
                                 @endforeach
                             </select>
+                            @error('blood_type')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="sm:col-span-3">
                             <label for="allergies" class="block text-sm font-medium text-gray-700">Allergies</label>
-                            <textarea name="allergies" id="allergies" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            <textarea name="allergies" id="allergies" rows="3" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            @error('allergies')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="sm:col-span-3">
                             <label for="chronic_diseases" class="block text-sm font-medium text-gray-700">Chronic Diseases</label>
-                            <textarea name="chronic_diseases" id="chronic_diseases" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            <textarea name="chronic_diseases" id="chronic_diseases" rows="3" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            @error('chronic_diseases')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="sm:col-span-3">
                             <label for="medical_history" class="block text-sm font-medium text-gray-700">Medical History</label>
-                            <textarea name="medical_history" id="medical_history" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            <textarea name="medical_history" id="medical_history" rows="4" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                            @error('medical_history')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -108,17 +141,17 @@
                     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div>
                             <label for="emergency_contact_name" class="block text-sm font-medium text-gray-700">Contact Name</label>
-                            <input type="text" name="emergency_contact_name" id="emergency_contact_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="text" name="emergency_contact_name" id="emergency_contact_name" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         </div>
 
                         <div>
                             <label for="emergency_contact_phone" class="block text-sm font-medium text-gray-700">Contact Phone</label>
-                            <input type="tel" name="emergency_contact_phone" id="emergency_contact_phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="tel" name="emergency_contact_phone" id="emergency_contact_phone" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         </div>
 
                         <div>
                             <label for="emergency_contact_relation" class="block text-sm font-medium text-gray-700">Relationship</label>
-                            <input type="text" name="emergency_contact_relation" id="emergency_contact_relation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="text" name="emergency_contact_relation" id="emergency_contact_relation" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         </div>
                     </div>
                 </div>
@@ -129,32 +162,32 @@
                     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                         <div>
                             <label for="insurance_company" class="block text-sm font-medium text-gray-700">Insurance Company</label>
-                            <input type="text" name="insurance_company" id="insurance_company" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="text" name="insurance_company" id="insurance_company" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         </div>
 
                         <div>
                             <label for="insurance_number" class="block text-sm font-medium text-gray-700">Insurance Number</label>
-                            <input type="text" name="insurance_number" id="insurance_number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="text" name="insurance_number" id="insurance_number" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <label for="policy_number" class="block text-sm font-medium text-gray-700">Policy Number</label>
-                            <input type="text" name="policy_number" id="policy_number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                        </div>
+                            <input type="text" name="policy_number" id="policy_number" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                        </div> --}}
 
-                        <div>
+                        {{-- <div>
                             <label for="member_number" class="block text-sm font-medium text-gray-700">Member Number</label>
-                            <input type="text" name="member_number" id="member_number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                        </div>
+                            <input type="text" name="member_number" id="member_number" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                        </div> --}}
 
                         <div>
                             <label for="issued_date" class="block text-sm font-medium text-gray-700">Issue Date</label>
-                            <input type="date" name="issued_date" id="issued_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="date" name="issued_date" id="issued_date" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         </div>
 
                         <div>
                             <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date</label>
-                            <input type="date" name="expiry_date" id="expiry_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="date" name="expiry_date" id="expiry_date" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         </div>
                     </div>
                 </div>
@@ -164,26 +197,26 @@
                     <!-- Height Input -->
                     <div class="mb-4">
                         <label for="height" class="block text-sm font-medium text-gray-700">Height (cm)</label>
-                        <input type="number" step="0.1" id="height" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Enter height in cm">
+                        <input type="number" step="0.1" id="height" name="height" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Enter height in cm">
                     </div>
                 
                     <!-- Weight Input -->
                     <div class="mb-4">
                         <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
-                        <input type="number" step="0.1" id="weight" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Enter weight in kg">
+                        <input type="number" step="0.1" name="weight" id="weight" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Enter weight in kg">
                     </div>
                 
                     <!-- BMI Result -->
                     <div class="mb-4">
                         <label for="bmi" class="block text-sm font-medium text-gray-700">Your BMI</label>
-                        <input type="text" id="bmi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm bg-gray-100 text-gray-700" readonly>
+                        <input type="text" id="bmi" name="bmi" class="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm sm:text-sm bg-gray-100 text-gray-700" readonly>
                         <p id="bmi_category" class="mt-2 text-sm font-semibold text-blue-600">--</p>
                     </div>
                 
-                    <button onclick="calculateBMI()" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Calculate</button>
+                    {{-- <button onclick="calculateBMI()" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Calculate</button> --}}
                 </div>
 
-                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                <div class="px-4 py-3 bg-gray-50 text-left sm:px-6">
                     <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Create Patient
                     </button>

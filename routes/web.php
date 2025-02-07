@@ -28,6 +28,9 @@ use App\Http\Controllers\Doctor\PatientController as DoctorPatientController;
 use App\Http\Controllers\Patient\HealthAssessmentController;
 use App\Http\Controllers\Admin\PayslipController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\Shop\CartController;
+use App\Http\Controllers\Shop\OrderController;
+use App\Http\Controllers\Shop\ShopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -163,4 +166,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/documents/contracts', [EmployeePortalController::class, 'contracts'])->name('documents.contracts');
         Route::get('/documents/tax-documents', [EmployeePortalController::class, 'taxDocuments'])->name('documents.tax-documents');
     });
+
+    // Shop Routes
+    Route::prefix('shop')->name('shop.')->group(function () {
+        // Main shop routes
+        Route::get('/', [ShopController::class, 'index'])->name('index');
+        Route::get('/products/{product}', [ShopController::class, 'showProduct'])->name('products.show');
+        Route::get('/drugs/{drug}', [ShopController::class, 'showDrug'])->name('drugs.show');
+
+        // Cart routes
+        Route::get('/cart', [CartController::class, 'index'])->name('cart');
+        Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+        Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+        // Order routes
+        Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    });
+
 });

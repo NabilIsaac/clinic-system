@@ -16,8 +16,8 @@ return new class extends Migration
             $table->integer('stock_quantity');
             $table->string('unit');
             $table->foreignId('category_id')->constrained();
-            $table->string('sku')->unique(); // Stock Keeping Unit
-            $table->integer('reorder_level')->default(10); // Minimum quantity before reorder alert
+            $table->string('sku')->unique();
+            $table->integer('reorder_level')->default(10);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -69,9 +69,14 @@ class Product extends Model implements HasMedia
     }
 
      // If you need to access the products directly
-     public function productsRelation()
-     {
-         return $this->belongsToMany(Product::class, 'checkup_products')
-             ->withPivot(['quantity', 'unit_price', 'total_price']);
-     }
+    public function productsRelation()
+    {
+        return $this->belongsToMany(Product::class, 'checkup_products')
+            ->withPivot(['quantity', 'unit_price', 'total_price']);
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)->withPivot('quantity', 'price');
+    }
 }

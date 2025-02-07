@@ -97,4 +97,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Bill::class, 'patient_id');
     }
+    
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
 }

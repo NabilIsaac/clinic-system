@@ -5,18 +5,19 @@
         <!-- Header -->
         <div class="sm:flex sm:items-center sm:justify-between">
             <h1 class="text-2xl font-bold text-gray-900">Patients</h1>
-            @role('nurse')
-            <div class="mt-4 sm:mt-0">
-                <a href="{{ route('nurse.patients.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Add new patients
-                </a>
-            </div>
+            @role(['nurse', 'receptionist'])
+                <div class="mt-4 sm:mt-0">
+                    <a href="{{ auth()->user()->hasRole('nurse') ? route('nurse.patients.create') : route('receptionist.patients.create') }}" 
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Add new patients
+                    </a>
+                </div>
             @endrole
         </div>
 
         <!-- Filters -->
         <div class="bg-white shadow rounded-lg">
-            <div class="border-b border-gray-200">
+            {{-- <div class="border-b border-gray-200">
                 <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
                     <a href="#" class="border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         All
@@ -31,7 +32,7 @@
                         Closed
                     </a>
                 </nav>
-            </div>
+            </div> --}}
 
             <!-- Table -->
             <div class="overflow-x-auto">
@@ -65,7 +66,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($patients as $patient)
+                        @forelse ($patients as $patient)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
@@ -117,7 +118,15 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    No patients found.
+                                </td>
+                            </tr>
+                            
+                        @endforelse
+                       
                     </tbody>
                 </table>
             </div>
