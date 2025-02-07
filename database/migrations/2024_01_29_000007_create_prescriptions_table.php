@@ -6,24 +6,36 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('prescriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('diagnosis_id')->constrained()->onDelete('cascade');
-            $table->foreignId('patient_id')->constrained()->onDelete('cascade');
-            $table->foreignId('doctor_id')->references('id')->on('employees')->onDelete('cascade');
-            $table->string('prescription_number')->unique();
-            $table->date('issue_date');
-            $table->date('expiry_date');
+            $table->foreignId('patient_id')->constrained('users');
+            $table->foreignId('doctor_id')->constrained('users');
+            $table->text('diagnosis');
             $table->text('notes')->nullable();
+            $table->enum('status', ['active', 'completed', 'cancelled'])->default('active');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('prescription_medications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('prescription_id')->constrained()->onDelete('cascade');
+            $table->string('medication_name');
+            $table->string('dosage');
+            $table->string('frequency');
+            $table->integer('duration');
+            $table->string('duration_unit'); // days, weeks, months
+            $table->text('special_instructions')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
     }
 
-    public function down(): void
+    public function down()
     {
+        Schema::dropIfExists('prescription_medications');
         Schema::dropIfExists('prescriptions');
     }
 };

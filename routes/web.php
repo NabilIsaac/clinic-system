@@ -33,6 +33,8 @@ use App\Http\Controllers\Shop\OrderController;
 use App\Http\Controllers\Shop\ShopController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\BroadcastController;
+use App\Http\Controllers\Patient\PrescriptionController as PatientPrescriptionController;
+use App\Http\Controllers\Doctor\PrescriptionController as DoctorPrescriptionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -116,6 +118,15 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('checkups', CheckupController::class);
         Route::get('/patients/search', [CheckupController::class, 'getPatients'])->name('patients.search');
         Route::resource('patient-assessments', HealthAssessmentController::class);
+
+        Route::get('excuse-duties', [ExcuseDutyController::class, 'index'])->name('excuse-duties.index');
+        Route::get('excuse-duties/create', [ExcuseDutyController::class, 'create'])->name('excuse-duties.create');
+        Route::post('excuse-duties', [ExcuseDutyController::class, 'store'])->name('excuse-duties.store');
+        Route::get('excuse-duties/{excuseDuty}', [ExcuseDutyController::class, 'show'])->name('excuse-duties.show');
+        Route::patch('excuse-duties/{excuseDuty}/cancel', [ExcuseDutyController::class, 'cancel'])->name('excuse-duties.cancel');
+
+        Route::resource('prescriptions', DoctorPrescriptionController::class);
+        Route::patch('prescriptions/{prescription}/cancel', [DoctorPrescriptionController::class, 'cancel'])->name('prescriptions.cancel');
     });
 
     Route::middleware(['role:nurse'])->prefix('nurse')->name('nurse.')->group(function () {
@@ -145,6 +156,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bills', [BillController::class, 'index'])->name('bills.index');
         Route::get('/bills/{bill}', [BillController::class, 'show'])->name('bills.show');
         Route::get('/bills/{bill}/download', [BillController::class, 'download'])->name('bills.download');
+
+        Route::get('prescriptions', [PatientPrescriptionController::class, 'index'])->name('prescriptions.index');
+        Route::get('prescriptions/{prescription}', [PatientPrescriptionController::class, 'show'])->name('prescriptions.show');
+        Route::get('prescriptions/{prescription}/download', [PatientPrescriptionController::class, 'download'])
+        ->name('prescriptions.download');
     });
 
     // Appointment Routes

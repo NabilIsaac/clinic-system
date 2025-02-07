@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('excuse_duties', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->constrained('users');
+            $table->foreignId('doctor_id')->constrained('users');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->text('reason');
+            $table->text('notes')->nullable();
+            $table->enum('status', ['issued', 'cancelled'])->default('issued');
             $table->timestamps();
         });
     }

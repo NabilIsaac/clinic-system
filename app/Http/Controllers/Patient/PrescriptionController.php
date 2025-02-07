@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Patient;
 use App\Http\Controllers\Controller;
 use App\Models\Prescription;
 use Illuminate\Http\Request;
+use PDF;
 
 class PrescriptionController extends Controller
 {
     public function index()
     {
-        $prescriptions = auth()->user()->prescriptions()
-            ->with(['prescriptionDrugs.drug', 'diagnosis', 'doctor.user'])
+        $prescriptions = Prescription::where('patient_id', auth()->id())
+            ->with(['doctor', 'medications'])
             ->latest()
             ->paginate(10);
 
@@ -20,21 +21,14 @@ class PrescriptionController extends Controller
 
     public function show(Prescription $prescription)
     {
-        if ($prescription->patient_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $prescription->load(['prescriptionDrugs.drug', 'diagnosis', 'doctor.user']);
+        // $this->authorize('view', $prescription);
         return view('patient.prescriptions.show', compact('prescription'));
     }
 
     public function download(Prescription $prescription)
     {
-        if ($prescription->patient_id !== auth()->id()) {
-            abort(403);
-        }
-
-        // Generate PDF and return for download
+        // $this->authorize('view', $prescription);
+        
         $pdf = PDF::loadView('patient.prescriptions.pdf', compact('prescription'));
         return $pdf->download('prescription-' . $prescription->id . '.pdf');
     }

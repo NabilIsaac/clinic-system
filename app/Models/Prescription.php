@@ -11,42 +11,25 @@ class Prescription extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'diagnosis_id',
         'patient_id',
         'doctor_id',
-        'prescription_number',
-        'issue_date',
-        'expiry_date',
+        'diagnosis',
         'notes',
+        'status'
     ];
-
-    protected $casts = [
-        'issue_date' => 'date',
-        'expiry_date' => 'date',
-    ];
-
-    public function diagnosis()
-    {
-        return $this->belongsTo(Diagnosis::class);
-    }
 
     public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(User::class, 'patient_id');
     }
 
     public function doctor()
     {
-        return $this->belongsTo(Employee::class, 'doctor_id');
+        return $this->belongsTo(User::class, 'doctor_id');
     }
 
-    public function prescriptionDrugs()
+    public function medications()
     {
-        return $this->hasMany(PrescriptionDrug::class);
-    }
-
-    public function billItem()
-    {
-        return $this->morphOne(BillItem::class, 'billable');
+        return $this->hasMany(PrescriptionMedication::class);
     }
 }
